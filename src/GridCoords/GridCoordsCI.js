@@ -41,7 +41,7 @@ GridCoordsCI.prototype.to_latLng = function() {
 	var bf0 = b * f0;
 	var n = (af0 - bf0) / (af0 + bf0);
 	var Et = this.x - e0;
-	var phid = GridCoordsCI.initialLat(this.y, n0, af0, phi0, n, bf0);
+	var phid = _initial_lat(this.y, n0, af0, phi0, n, bf0);
 	var nu = af0 / (Math.sqrt(1 - (e2 * (Math.sin(phid) * Math.sin(phid)))));
 	var rho = (nu * (1 - e2)) / (1 - (e2 * (Math.sin(phid)) * (Math.sin(phid))));
 	var eta2 = (nu / rho) - 1;
@@ -59,25 +59,20 @@ GridCoordsCI.prototype.to_latLng = function() {
 	var XIIA = clatm1 / (5040 * Math.pow(nu, 7)) * (61 + (662 * tlat2) + (1320 * tlat4) + (720 * tlat6));
 	var lambdap = (lam0 + (Et * X) - ((Et * Et * Et) * XI) + (Math.pow(Et, 5) * XII) - (Math.pow(Et, 7) * XIIA));
 
+	var WGS84_AXIS = 6378137;
+	var WGS84_ECCENTRIC = 0.00669438037928458;
+
+	var INT24_AXIS = 6378388.000;
+	var INT24_ECCENTRIC = 0.0067226700223333;
+	var height = 10;  // dummy height
+	var latLngRadians = LatLng._transform(phip, lambdap, INT24_AXIS, INT24_ECCENTRIC, height, WGS84_AXIS, WGS84_ECCENTRIC, -83.901, -98.127, -118.635, 0, 0, 0, 0);
+
 	var latLngRadians = GridCoordsCI.convert_to_wgs(phip, lambdap);
 
 	return new LatLngWGS84(latLngRadians.lat * rad2deg, latLngRadians.lng * rad2deg);
 };
-
-GridCoordsCI.convert_to_wgs = function(phip, lambdap) {
-	var WGS84_AXIS = 6378137;
-	var WGS84_ECCENTRIC = 0.00669438037928458;
-	//OSGB_AXIS = 6377563.396;
-	//OSGB_ECCENTRIC = 0.0066705397616;
-	//IRISH_AXIS = 6377340.189;
-	//IRISH_ECCENTRIC = 0.00667054015;
-	var INT24_AXIS = 6378388.000;
-	var INT24_ECCENTRIC = 0.0067226700223333;
-	var height = 10;  // dummy height
-	return LatLng._transform(phip, lambdap, INT24_AXIS, INT24_ECCENTRIC, height, WGS84_AXIS, WGS84_ECCENTRIC, -83.901, -98.127, -118.635, 0, 0, 0, 0);
-};
 	
-GridCoordsCI.initialLat = function(north, n0, af0, phi0, n, bf0) {
+const _initial_lat = function(north, n0, af0, phi0, n, bf0) {
 	var phi1 = ((north - n0) / af0) + phi0;
 	var M = GridCoordsCI.marc(bf0, n, phi0, phi1);
 	var phi2 = ((north - n0 - M) / af0) + phi1;
@@ -86,7 +81,7 @@ GridCoordsCI.initialLat = function(north, n0, af0, phi0, n, bf0) {
 	{
 		ind += 1;
 		phi2 = ((north - n0 - M) / af0) + phi1;
-		M = LatLng._marc(bf0, n, phi0, phi2);
+		M = LatLng._Marc(bf0, n, phi0, phi2);
 		phi1 = phi2;
 	}
 	return phi2;
