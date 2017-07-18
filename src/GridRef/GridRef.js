@@ -2,13 +2,13 @@
 /**
  * @constructor
  */
-let GridRefParser = function() {};
+export const GridRef = function() {};
 
 /**
  * x,y offsets (in metres) for tetrad letter codes
  * @type {Object.<string,Array.<number>>}
  */
-GridRefParser.tetradOffsets = {
+GridRef.tetradOffsets = {
   E: [0,8000], J: [2000,8000], P: [4000,8000], U: [6000,8000], Z: [8000,8000],
   D: [0,6000], I: [2000,6000], N: [4000,6000], T: [6000,6000], Y: [8000,6000],
   C: [0,4000], H: [2000,4000], M: [4000,4000], S: [6000,4000], X: [8000,4000],
@@ -20,7 +20,7 @@ GridRefParser.tetradOffsets = {
  * x,y offsets (in metres) for quadrant codes
  * @var array
  */
-GridRefParser.quadrantOffsets = {
+GridRef.quadrantOffsets = {
   NW: [0,5000],
   NE: [5000,5000],
   SW: [0,0],
@@ -32,7 +32,7 @@ GridRefParser.quadrantOffsets = {
  * 'I' is omitted
  * @var array
  */
-GridRefParser.letterMapping = {
+GridRef.letterMapping = {
   A: 0, B: 1, C: 2, D: 3, E: 4, F: 5, G: 6, H: 7, J: 8, K: 9,
   L: 10, M: 11, N: 12, O: 13, P: 14, Q: 15, R: 16, S: 17, T: 18,
   U: 19, V: 20, W: 21, X: 22, Y: 23, Z: 24
@@ -46,77 +46,63 @@ GridRefParser.letterMapping = {
  *
  * @var string
  */
-GridRefParser.tetradLetters = 'ABCDEFGHIJKLMNPQRSTUVWXYZ';
+GridRef.tetradLetters = 'ABCDEFGHIJKLMNPQRSTUVWXYZ';
 
 /**
  *
  * @var string
  */
-GridRefParser.prototype.preciseGridRef = '';
-
-/**
- * Easting in m
- * @deprecated
- * @var real
- */
-//GridRefParser.prototype.easting;
-
-/**
- * Northing in m
- * @deprecated
- * @var real
- */
-//GridRefParser.prototype.northing;
+GridRef.prototype.preciseGridRef = '';
 
 /**
  * length in m (0 marks an invalid value)
  *
  * @var number
  */
-GridRefParser.prototype.length = 0;
+GridRef.prototype.length = 0;
 
 /**
  * @var string
  */
-GridRefParser.prototype.hectad = '';
+GridRef.prototype.hectad = '';
 
 /**
  * 10km ref with tetrad suffix or ''
  * e.g. SD59A
  * @var string
  */
-GridRefParser.prototype.tetrad = '';
+GridRef.prototype.tetrad = '';
 
 /**
  *
  * @var string
  */
-GridRefParser.prototype.tetradLetter = '';
+GridRef.prototype.tetradLetter = '';
 
 /**
  * quadrant gridref(e.g. NZ34NW)
  * only set if gridref is defined at 5km or <=1km precision
  * undefined by default so need to use getter
  *
- * read using GridRefParser::get_quadrant
+ * read using GridRef::get_quadrant
  *
  * @var string
  */
-GridRefParser.prototype.quadrant = '';
+GridRef.prototype.quadrant = '';
 
 /**
  * quadrant code suffix(e.g. NW, NE, SW, SE)
  *
  * @var string
  */
-GridRefParser.prototype.quadrantCode = '';
+GridRef.prototype.quadrantCode = '';
 
 /**
  * update tetrad using Easting/Northing values (metres)
  * hectad should have been set prior to call
  */
-GridRefParser.prototype.set_tetrad = function() {
-  this.tetradLetter = GridRefParser.tetradLetters.substr(
+GridRef.prototype.set_tetrad = function() {
+  this.tetradLetter = GridRef.tetradLetters.substr(
     ((Math.floor((this.osRef.x % 10000) / 1000) >> 1) * 5) + (Math.floor((this.osRef.y % 10000) / 1000) >> 1)
     , 1);
 
@@ -126,7 +112,7 @@ GridRefParser.prototype.set_tetrad = function() {
   this.tetrad = this.hectad + this.tetradLetter;
 };
 
-GridRefParser.get_normalized_precision = function(rawPrecision, minPrecision) {
+GridRef.get_normalized_precision = function(rawPrecision, minPrecision) {
   return rawPrecision > 2000 ? 10000 :
     (rawPrecision > 1000 ? 2000 :
         (rawPrecision > 100 ? 1000 :
@@ -139,5 +125,4 @@ GridRefParser.get_normalized_precision = function(rawPrecision, minPrecision) {
     );
 };
 
-
-export default GridRefParser;
+//export default GridRef;

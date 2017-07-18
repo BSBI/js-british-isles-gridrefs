@@ -1,17 +1,17 @@
-import GridRefParser from './GridRefParser';
-import OSIRef from '../OSIRef';
+import {GridRef} from './GridRef';
+import {GridCoordsIE} from '../GridCoords/GridCoordsIE';
 
 /**
  * @constructor
  */
-let GridRefParserIE = function() {};
+export const GridRefIE = function() {};
 
-GridRefParserIE.prototype = new GridRefParser();
-GridRefParserIE.prototype.constructor = GridRefParserIE;
-GridRefParserIE.prototype.country = 'IE';
-GridRefParserIE.prototype.NationalRef = OSIRef;
+GridRefIE.prototype = new GridRef();
+GridRefIE.prototype.constructor = GridRefIE;
+GridRefIE.prototype.country = 'IE';
+GridRefIE.prototype.NationalRef = GridCoordsIE;
 
-GridRefParserIE.gridLetter = {
+GridRefIE.gridLetter = {
   A: [0,4],
   B: [1,4],
   C: [2,4],
@@ -38,13 +38,13 @@ GridRefParserIE.gridLetter = {
  * @param {string} rawGridRef
  * @throws Error
  */
-GridRefParserIE.prototype.parse = function(rawGridRef) {
+GridRefIE.prototype.from_string = function(rawGridRef) {
   var trimmedLocality = rawGridRef.replace(/[\[\]\s\t\.-]+/g, '').toUpperCase();
 
   if (/[ABCDEFGHIJKLMNPQRSTUVWXYZ]$/.test(trimmedLocality)) {
     // tetrad or quadrant
 
-    if (GridRefParser.quadrantOffsets.hasOwnProperty(trimmedLocality.substr(trimmedLocality.length - 2))) {
+    if (GridRefIE.quadrantOffsets.hasOwnProperty(trimmedLocality.substr(trimmedLocality.length - 2))) {
       this.quadrantCode = trimmedLocality.substr(trimmedLocality.length - 2);
       trimmedLocality = trimmedLocality.substr(0, trimmedLocality.length - 2);
     } else {
@@ -63,15 +63,15 @@ GridRefParserIE.prototype.parse = function(rawGridRef) {
         this.preciseGridRef = this.hectad + this.tetradLetter;
         this.tetrad = this.preciseGridRef;
         this.length = 2000; // 2km square
-        this.osRef.x += GridRefParser.tetradOffsets[this.tetradLetter][0];
-        this.osRef.y += GridRefParser.tetradOffsets[this.tetradLetter][1];
+        this.osRef.x += GridRefIE.tetradOffsets[this.tetradLetter][0];
+        this.osRef.y += GridRefIE.tetradOffsets[this.tetradLetter][1];
       } else {
         // quadrant
         this.preciseGridRef = this.hectad + this.quadrantCode;
         this.quadrant = this.preciseGridRef;
         this.length = 5000; // 5km square
-        this.osRef.x += GridRefParser.quadrantOffsets[this.quadrantCode][0];
-        this.osRef.y += GridRefParser.quadrantOffsets[this.quadrantCode][1];
+        this.osRef.x += GridRefIE.quadrantOffsets[this.quadrantCode][0];
+        this.osRef.y += GridRefIE.quadrantOffsets[this.quadrantCode][1];
       }
     } else {
       this.preciseGridRef = trimmedLocality;
@@ -87,16 +87,16 @@ GridRefParserIE.prototype.parse = function(rawGridRef) {
   }
 };
 
-GridRefParserIE.prototype.parse_well_formed = GridRefParserIE.prototype.parse;
+GridRefIE.prototype.parse_well_formed = GridRefIE.prototype.from_string;
 
-GridRefParserIE._IE_GRID_LETTERS = 'VQLFAWRMGBXSNHCYTOJD';
+GridRefIE._IE_GRID_LETTERS = 'VQLFAWRMGBXSNHCYTOJD';
 
 /**
  *
  * @param {string} gridRef nn/nnnn or [A-Z]nnnn or [A-Z]/nnnn (no other punctuation by this point), all upper-case
  * @return boolean
  */
-GridRefParserIE.prototype.parse_gr_string_without_tetrads = function(gridRef) {
+GridRefIE.prototype.parse_gr_string_without_tetrads = function(gridRef) {
   var x, y, ref, char;
 
   if (/^\d{2}\/(?:\d\d){1,5}$/.test(gridRef)) {
@@ -113,7 +113,7 @@ GridRefParserIE.prototype.parse_gr_string_without_tetrads = function(gridRef) {
     }
 
     ref = gridRef.substr(3);
-    char = GridRefParserIE._IE_GRID_LETTERS.charAt((x * 5) + y);
+    char = GridRefIE._IE_GRID_LETTERS.charAt((x * 5) + y);
 
     x *= 100000;
     y *= 100000;
@@ -129,7 +129,7 @@ GridRefParserIE.prototype.parse_gr_string_without_tetrads = function(gridRef) {
 
     if (gridRef) {
       char = gridRef.charAt(0);
-      var p = GridRefParserIE._IE_GRID_LETTERS.indexOf(char);
+      var p = GridRefIE._IE_GRID_LETTERS.indexOf(char);
 
       if (p !== -1) {
         x = Math.floor(p / 5) * 100000;
@@ -152,7 +152,7 @@ GridRefParserIE.prototype.parse_gr_string_without_tetrads = function(gridRef) {
 
   switch (ref.length) {
     case 2:
-      this.osRef = new OSIRef(
+      this.osRef = new GridCoordsIE(
         x + (ref.charAt(0) * 10000),
         y + (ref.charAt(1) * 10000)
       );
@@ -161,7 +161,7 @@ GridRefParserIE.prototype.parse_gr_string_without_tetrads = function(gridRef) {
       break;
 
     case 4:
-      this.osRef = new OSIRef(
+      this.osRef = new GridCoordsIE(
         x + Math.floor(ref / 100) * 1000,
         y + (ref % 100) * 1000
       );
@@ -170,7 +170,7 @@ GridRefParserIE.prototype.parse_gr_string_without_tetrads = function(gridRef) {
       break;
 
     case 6:
-      this.osRef = new OSIRef(
+      this.osRef = new GridCoordsIE(
         x + Math.floor(ref / 1000) * 100,
         y + (ref % 1000) * 100
       );
@@ -179,7 +179,7 @@ GridRefParserIE.prototype.parse_gr_string_without_tetrads = function(gridRef) {
       break;
 
     case 8:
-      this.osRef = new OSIRef(
+      this.osRef = new GridCoordsIE(
         x + Math.floor(ref / 10000) * 10,
         y + (ref % 10000) * 10
       );
@@ -188,7 +188,7 @@ GridRefParserIE.prototype.parse_gr_string_without_tetrads = function(gridRef) {
       break;
 
     case 10:
-      this.osRef = new OSIRef(
+      this.osRef = new GridCoordsIE(
         x + Math.floor(ref / 100000),
         y + (ref % 100000)
       );
@@ -205,4 +205,4 @@ GridRefParserIE.prototype.parse_gr_string_without_tetrads = function(gridRef) {
   return true;
 };
 
-export default GridRefParserIE;
+//export default GridRefIE;
