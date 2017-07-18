@@ -2,6 +2,7 @@ import { GridCoords, _e_n_to_gr } from './GridCoords';
 import { LatLngGB } from '../LatLng/LatLngGB';
 import { rad2deg } from '../constants';
 
+export const GridCoordsGB = /*@__PURE__*/(function() {
 /**
  *
  * @param {number} easting metres
@@ -10,7 +11,7 @@ import { rad2deg } from '../constants';
  * @extends GridCoords
  * @returns {GridCoordsGB}
  */
-export const GridCoordsGB = function(easting, northing) {
+const GridCoordsGB = function(easting, northing) {
   this.x = easting;
   this.y = northing;
 };
@@ -192,3 +193,5 @@ GridCoordsGB.prototype.to_latLng = function() {
 
 	return (new LatLngGB(rad2deg * phi, rad2deg * lambda)).to_WGS84();
 };
+return GridCoordsGB;
+})();

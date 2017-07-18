@@ -1,10 +1,11 @@
 import {GridRef} from './GridRef';
 import {GridCoordsIE} from '../GridCoords/GridCoordsIE';
 
+export const GridRefIE = /*@__PURE__*/(function() {
 /**
  * @constructor
  */
-export const GridRefIE = function() {};
+const GridRefIE = function() {};
 
 GridRefIE.prototype = new GridRef();
 GridRefIE.prototype.constructor = GridRefIE;
@@ -204,5 +205,5 @@ GridRefIE.prototype.parse_gr_string_without_tetrads = function(gridRef) {
   }
   return true;
 };
-
-//export default GridRefIE;
+return GridRefIE;
+})();

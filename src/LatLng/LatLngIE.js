@@ -3,6 +3,7 @@ import { LatLngWGS84 } from './LatLngWGS84';
 import { GridCoordsIE } from '../GridCoords/GridCoordsIE';
 import { deg2rad, rad2deg } from '../constants';
 
+export const LatLngIE = /*@__PURE__*/(function() {
 /**
  * represents lat lng as Modified Airy (Irish grid projection)
  *
@@ -10,7 +11,7 @@ import { deg2rad, rad2deg } from '../constants';
  * @param {number} lng
  * @constructor
  */
-export const LatLngIE = function(lat, lng) {
+const LatLngIE = function(lat, lng) {
   this.lat = lat;
   this.lng = lng;
 };
@@ -137,3 +138,5 @@ LatLngIE.from_wgs84 = function (latLngWGS84) {
 	 
 	return new LatLngIE(latlng.lat * rad2deg, latlng.lng * rad2deg);
 };
+return LatLngIE;
+})();

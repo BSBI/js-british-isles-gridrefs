@@ -5,7 +5,7 @@ import uglify from 'rollup-plugin-uglify';
 
 export default {
   entry: 'src/index.js',
-  format: 'cjs', // 'cjs'
+  format: 'es', // 'cjs'
   plugins: [
     resolve({
 		// pass custom options to the resolve plugin
@@ -15,9 +15,9 @@ export default {
 	  }),
     babel({
       exclude: 'node_modules/**' // only transpile our source code
-    }),
+    })
 	//(process.env.NODE_ENV === 'production' && uglify())
-	uglify()
+	//uglify()
   ],
   dest: 'dist/gridrefutils.js', // equivalent to --output
   sourceMap: true

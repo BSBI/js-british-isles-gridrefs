@@ -1,10 +1,12 @@
 import {GridRef} from './GridRef';
 import {GridCoordsCI} from '../GridCoords/GridCoordsCI';
 
+export const GridRefCI = /*@__PURE__*/(function() {
+
 /**
  * @constructor
  */
-export const GridRefCI = function() {};
+const GridRefCI = function() {};
 
 GridRefCI.prototype = new GridRef();
 GridRefCI.prototype.constructor = GridRefCI;
@@ -143,3 +145,5 @@ GridRefCI.gridref_string_to_e_n_l = function(gridRef) {
 		length : length
 	};
 };
+return GridRefCI;
+})();

@@ -2,6 +2,8 @@ import { GridCoords, _e_n_to_gr } from './GridCoords';
 import { LatLngIE } from '../LatLng/LatLngIE';
 import { rad2deg } from '../constants';
 
+export const GridCoordsIE = /*@__PURE__*/(function() {
+	
 /**
  *
  * @param {number} easting metres
@@ -9,7 +11,7 @@ import { rad2deg } from '../constants';
  * @constructor
  * @returns {GridCoordsIE}
  */
-export const GridCoordsIE = function(easting, northing) {
+const GridCoordsIE = function(easting, northing) {
   this.x = easting;
   this.y = northing;
 };
@@ -157,3 +159,6 @@ GridCoordsIE.prototype.to_hectad = function() {
 		return '';
 	}
 };
+
+return GridCoordsIE;
+})();

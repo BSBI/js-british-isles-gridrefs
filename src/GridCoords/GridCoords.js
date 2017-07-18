@@ -3,6 +3,8 @@ import {LatLngCI} from '../LatLng/LatLngCI';
 import {LatLngIE} from '../LatLng/LatLngIE';
 import {LatLngWGS84} from '../LatLng/LatLngWGS84';
 
+export const GridCoords = /*@__PURE__*/(function() {
+
 /**
  * abstract representation of a gridref co-ordinate pair
  * (*not a gridref string*)
@@ -10,7 +12,7 @@ import {LatLngWGS84} from '../LatLng/LatLngWGS84';
  * @constructor
  * @returns {GridCoords}
  */
-export const GridCoords = function () {};
+const GridCoords = function () {};
 
 /**
  * tetrad letters ordered by easting then northing (steps of 2000m)
@@ -70,6 +72,25 @@ GridCoords.from_latlng = function(lat, lng) {
 
 /**
  * 
+ * @param {number} easting
+ * @param {number} northing
+ * @return {string} tetrad letter
+ */
+GridCoords.calculate_tetrad = function(easting, northing) {
+	return (easting >= 0 && northing >= 0) ?
+		GridCoords.tetradLetters.charAt((Math.floor(easting % 10000 / 2000) * 5) + Math.floor(northing % 10000 / 2000)) :
+		'';
+};
+
+GridCoords.prototype.toString = function() {
+	return this.x + ',' + this.y;
+};
+
+return GridCoords;
+})();
+
+/**
+ * 
  * @param {string} letters
  * @param {number} e metres
  * @param {number} n metres
@@ -101,20 +122,3 @@ export const _e_n_to_gr = function(letters, e, n, precision) {
 			);
 	}
 };
-
-/**
- * 
- * @param {number} easting
- * @param {number} northing
- * @return {string} tetrad letter
- */
-GridCoords.calculate_tetrad = function(easting, northing) {
-	return (easting >= 0 && northing >= 0) ?
-		GridCoords.tetradLetters.charAt((Math.floor(easting % 10000 / 2000) * 5) + Math.floor(northing % 10000 / 2000)) :
-		'';
-};
-
-GridCoords.prototype.toString = function() {
-	return this.x + ',' + this.y;
-};
-

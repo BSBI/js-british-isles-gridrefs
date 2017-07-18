@@ -1,8 +1,10 @@
 
+export const GridRef = /*@__PURE__*/(function() {
+
 /**
  * @constructor
  */
-export const GridRef = function() {};
+const GridRef = function() {};
 
 /**
  * x,y offsets (in metres) for tetrad letter codes
@@ -125,4 +127,5 @@ GridRef.get_normalized_precision = function(rawPrecision, minPrecision) {
     );
 };
 
-//export default GridRef;
+return GridRef;
+})();

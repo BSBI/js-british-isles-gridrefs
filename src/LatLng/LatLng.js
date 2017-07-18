@@ -1,5 +1,7 @@
 import { deg2rad } from '../constants';
 
+export const LatLng = /*@__PURE__*/(function() {
+
 /**
  * represents lat lng
  *
@@ -7,7 +9,7 @@ import { deg2rad } from '../constants';
  * @param {number} lng
  * @constructor
  */
-export const LatLng = function (lat, lng) {
+const LatLng = /*@__PURE__*/function (lat, lng) {
   this.lat = lat;
   this.lng = lng;
 };
@@ -51,3 +53,5 @@ LatLng._Marc = function (bf0, n, phi0, phi) {
 - (((35 / 24) * (n * n * n)) * (Math.sin(3 * (phi - phi0))) * (Math.cos(3 * (phi + phi0)))));
 };
 
+return LatLng;
+})();

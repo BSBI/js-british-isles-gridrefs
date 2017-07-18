@@ -1,7 +1,4 @@
 
-import { LatLng } from './LatLng';
-import { deg2rad, rad2deg } from '../constants';
-
 /**
  * represents lat lng as WGS84 (google map form)
  *

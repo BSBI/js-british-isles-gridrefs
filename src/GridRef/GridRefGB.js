@@ -1,10 +1,12 @@
 import {GridRef} from './GridRef';
 import {GridCoordsGB} from '../GridCoords/GridCoordsGB';
 
+export const GridRefGB = /*@__PURE__*/(function() {
+
 /**
  * @constructor
  */
-export const GridRefGB = function() {};
+const GridRefGB = function() {};
 
 GridRefGB.prototype = new GridRef();
 GridRefGB.prototype.constructor = GridRefGB;
@@ -375,4 +377,5 @@ GridRefGB.prototype.parse_wellformed_gb_gr_string_no_tetrads = function(gridRef)
 	}
 };
 
-//export default GridRefGB;
+return GridRefGB;
+})();

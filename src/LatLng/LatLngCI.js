@@ -2,6 +2,7 @@ import { LatLng} from './LatLng';
 import { GridCoordsCI } from '../GridCoords/GridCoordsCI';
 import { rad2deg, deg2rad } from '../constants';
 
+export const LatLngCI = /*@__PURE__*/(function() {
 /**
  * represents lat lng as INT24 (CI grid projection)
  *
@@ -9,7 +10,7 @@ import { rad2deg, deg2rad } from '../constants';
  * @param {number} lat
  * @param {number} lng
  */
-export const LatLngCI = function(lat, lng) {
+const LatLngCI = function(lat, lng) {
 	this.lat = lat;
 	this.lng = lng;
 };
@@ -95,3 +96,5 @@ LatLngCI.from_wgs84 = function (latLngWGS84) {
 	 
 	return new LatLngCI(latlng.lat * rad2deg, latlng.lng * rad2deg);
 };
+return LatLngCI;
+})();

@@ -3,6 +3,7 @@ import { LatLngWGS84 } from './LatLngWGS84';
 import { GridCoordsGB } from '../GridCoords/GridCoordsGB';
 import { deg2rad, rad2deg } from '../constants';
 
+export const LatLngGB = /*@__PURE__*/(function() {
 /**
  * represents lat lng as OSGB1936 (Ordnance Survey projection)
  *
@@ -10,7 +11,7 @@ import { deg2rad, rad2deg } from '../constants';
  * @param {number} lng
  * @constructor
  */
-export const LatLngGB = function(lat, lng) {
+const LatLngGB = function(lat, lng) {
   this.lat = lat;
   this.lng = lng;
 };
@@ -166,3 +167,5 @@ LatLngGB.from_wgs84 = function (latLngWGS84) {
 
     return new LatLngGB(newLat * rad2deg, newLon * rad2deg);
 };
+return LatLngGB;
+})();
