@@ -115,8 +115,8 @@ GridRefGB.prototype.from_string = function(rawGridRef) {
 					this.tetradLetter = tetradCode;
 					this.tetrad = this.hectad + tetradCode;
 					this.length = 2000; // 2km square
-					this.osRef.x += GridRef.tetradKmOffsets[tetradCode][0];
-					this.osRef.y += GridRef.tetradKmOffsets[tetradCode][1];
+					this.osRef.x += GridRef.tetradOffsets[tetradCode][0];
+					this.osRef.y += GridRef.tetradOffsets[tetradCode][1];
 				} else {
 					// quadrant
 					this.preciseGridRef = trimmedLocality + this.quadrantCode;

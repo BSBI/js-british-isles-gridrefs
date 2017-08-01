@@ -85,7 +85,8 @@ GridRefCI.prototype.parse_well_formed = GridRefCI.prototype.from_string;
  *
  *
  * @param {string} gridRef plain string without tetrad or quadrant suffix
- * @return false|{'eKm' : easting, 'nKm' : northing, 'lengthKm' : length}
+ * @return {(boolean|{e : number, n : number, length : number})}
+ * returns false on error or object {'e' : easting, 'n' : northing, 'length' : length}
  */
 GridRefCI.gridref_string_to_e_n_l = function(gridRef) {
 	var northOffset, x, y, length;

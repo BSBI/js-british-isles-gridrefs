@@ -62,13 +62,13 @@ GridCoordsCI.prototype.to_latLng = function() {
 	var XIIA = clatm1 / (5040 * Math.pow(nu, 7)) * (61 + (662 * tlat2) + (1320 * tlat4) + (720 * tlat6));
 	var lambdap = (lam0 + (Et * X) - ((Et * Et * Et) * XI) + (Math.pow(Et, 5) * XII) - (Math.pow(Et, 7) * XIIA));
 
-	var WGS84_AXIS = 6378137;
-	var WGS84_ECCENTRIC = 0.00669438037928458;
-
-	var INT24_AXIS = 6378388.000;
-	var INT24_ECCENTRIC = 0.0067226700223333;
-	var height = 10;  // dummy height
-	var latLngRadians = LatLng._transform(phip, lambdap, INT24_AXIS, INT24_ECCENTRIC, height, WGS84_AXIS, WGS84_ECCENTRIC, -83.901, -98.127, -118.635, 0, 0, 0, 0);
+	// var WGS84_AXIS = 6378137;
+	// var WGS84_ECCENTRIC = 0.00669438037928458;
+    //
+	// var INT24_AXIS = 6378388.000;
+	// var INT24_ECCENTRIC = 0.0067226700223333;
+	// var height = 10;  // dummy height
+	// //var latLngRadians = LatLng._transform(phip, lambdap, INT24_AXIS, INT24_ECCENTRIC, height, WGS84_AXIS, WGS84_ECCENTRIC, -83.901, -98.127, -118.635, 0, 0, 0, 0);
 
 	var latLngRadians = GridCoordsCI.convert_to_wgs(phip, lambdap);
 

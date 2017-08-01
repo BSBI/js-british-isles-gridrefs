@@ -39,14 +39,14 @@ GridCoordsGB.prototype.to_gridref = function (precision) {
 		firstLetter = (hundredkmE < 5) ? 'H' : 'J';
 	}
 
-	var secondLetter = '';
+
 	var index = 65 + ((4 - (hundredkmN % 5)) * 5) + (hundredkmE % 5);
 	
 	if (index >= 73) {
 		index++;
 	}
 	
-	secondLetter = String.fromCharCode(index);
+	var secondLetter = String.fromCharCode(index);
 	
 	return _e_n_to_gr(
 		firstLetter + secondLetter, 
@@ -107,8 +107,8 @@ GridCoordsGB.prototype.to_latLng = function() {
 	var a        = 6377563.396; // airy1830->maj;
 	//var b        = 6356256.909; // airy1830->min;
 	var eSquared = 0.00667054007; // ((maj * maj) - (min * min)) / (maj * maj); // airy1830->ecc;
-	var phi      = 0.0;
-	var lambda   = 0.0;
+	//var phi      = 0.0;
+	//var lambda   = 0.0;
 	var E        = this.x;
 	var N        = this.y;
 	var n        = 0.0016732203289875; //(a - b) / (a + b);
@@ -179,12 +179,12 @@ GridCoordsGB.prototype.to_latLng = function() {
 		* tanphiPrime2
 		* tanphiPrime2
 		* tanphiPrime2));
-	phi =
+	var phi =
 		phiPrime
 		- (VII * Math.pow(E - E0, 2.0))
 		+ (VIII * Math.pow(E - E0, 4.0))
 		- (IX * Math.pow(E - E0, 6.0));
-	lambda =
+	var lambda =
 		lambda0
 		+ (X * (E - E0))
 		- (XI * Math.pow(E - E0, 3.0))
