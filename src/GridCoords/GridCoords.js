@@ -42,7 +42,7 @@ GridCoords.tetradLettersRowFirst = 'AFKQVBGLRWCHMSXDINTYEJPUZ';
 GridCoords.from_latlng = function(lat, lng) {
 	// test if GB
 	if (lng >= -8.74 && lat > 49.88) {
-		// lng extreme must accomodate St Kilda
+		// lng extreme must accommodate St Kilda
 		
 		var os = new LatLngGB.from_wgs84(new LatLngWGS84(lat, lng)).to_os_coords();
 		if (os.x >= 0 && os.is_gb_hectad()) {

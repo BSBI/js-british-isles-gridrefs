@@ -105,15 +105,21 @@ GridRef.prototype.quadrantCode = '';
  */
 GridRef.prototype.set_tetrad = function() {
   this.tetradLetter = GridRef.tetradLetters.substr(
-    ((Math.floor((this.osRef.x % 10000) / 1000) >> 1) * 5) + (Math.floor((this.osRef.y % 10000) / 1000) >> 1)
+    ((Math.floor((this.gridCoords.x % 10000) / 1000) >> 1) * 5) + (Math.floor((this.gridCoords.y % 10000) / 1000) >> 1)
     , 1);
 
   if (!this.tetradLetter) {
-    throw new Error("Failed to get tetrad letter when processing '" + this.preciseGridRef + "', easting=" + this.osRef.x + " northing=" + this.osRef.y);
+    throw new Error("Failed to get tetrad letter when processing '" + this.preciseGridRef + "', easting=" + this.gridCoords.x + " northing=" + this.gridCoords.y);
   }
   this.tetrad = this.hectad + this.tetradLetter;
 };
 
+/**
+ *
+ * @param {number} rawPrecision
+ * @param {number} minPrecision
+ * @returns {number}
+ */
 GridRef.get_normalized_precision = function(rawPrecision, minPrecision) {
   return rawPrecision > 2000 ? 10000 :
     (rawPrecision > 1000 ? 2000 :

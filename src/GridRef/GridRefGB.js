@@ -11,7 +11,7 @@ const GridRefGB = function() {};
 GridRefGB.prototype = new GridRef();
 GridRefGB.prototype.constructor = GridRefGB;
 GridRefGB.prototype.country = 'GB';
-GridRefGB.prototype.NationalRef = GridCoordsGB;
+GridRefGB.prototype.GridCoords = GridCoordsGB;
 
 /**
  * gridref known to have correct syntax
@@ -43,14 +43,14 @@ GridRefGB.prototype.parse_well_formed = function(rawGridRef) {
 		if (this.tetradLetter) {
 			this.preciseGridRef = this.tetrad = this.hectad + this.tetradLetter;
 			this.length = 2000; // 2km square
-			this.osRef.x += GridRef.tetradOffsets[this.tetradLetter][0];
-			this.osRef.y += GridRef.tetradOffsets[this.tetradLetter][1];
+			this.gridCoords.x += GridRef.tetradOffsets[this.tetradLetter][0];
+			this.gridCoords.y += GridRef.tetradOffsets[this.tetradLetter][1];
 		} else {
 			// quadrant
 			this.preciseGridRef = this.quadrant = rawGridRef + this.quadrantCode;
 			this.length = 5000; // 5km square
-			this.osRef.x += GridRef.quadrantOffsets[this.quadrantCode][0];
-			this.osRef.y += GridRef.quadrantOffsets[this.quadrantCode][1];
+			this.gridCoords.x += GridRef.quadrantOffsets[this.quadrantCode][0];
+			this.gridCoords.y += GridRef.quadrantOffsets[this.quadrantCode][1];
 		}
 	} else {
 		this.preciseGridRef = rawGridRef;
@@ -99,7 +99,7 @@ GridRefGB.prototype.from_string = function(rawGridRef) {
 		// special case error, VC number entered in the wrong field
 		this.error = true;
 		this.errorMessage = "Misplaced vice-county code in grid-reference field. ('" + trimmedLocality + "')";
-		this.osRef = null;
+		this.gridCoords = null;
 		this.length = 0;
 	} else if ((ref = trimmedLocality.match(/^([A-Z]{2}(?:\d\d){1,5})$/)) !== null) {
 		trimmedLocality = ref[0]; //grid reference
@@ -115,8 +115,8 @@ GridRefGB.prototype.from_string = function(rawGridRef) {
 					this.tetradLetter = tetradCode;
 					this.tetrad = this.hectad + tetradCode;
 					this.length = 2000; // 2km square
-					this.osRef.x += GridRef.tetradOffsets[tetradCode][0];
-					this.osRef.y += GridRef.tetradOffsets[tetradCode][1];
+					this.gridCoords.x += GridRef.tetradOffsets[tetradCode][0];
+					this.gridCoords.y += GridRef.tetradOffsets[tetradCode][1];
 				} else {
 					// quadrant
 					this.preciseGridRef = trimmedLocality + this.quadrantCode;
@@ -124,8 +124,8 @@ GridRefGB.prototype.from_string = function(rawGridRef) {
 					this.tetrad = '';
 					this.quadrant = this.preciseGridRef;
 					this.length = 5000; // 5km square
-					this.osRef.x += GridRef.quadrantOffsets[this.quadrantCode][0];
-					this.osRef.y += GridRef.quadrantOffsets[this.quadrantCode][1];
+					this.gridCoords.x += GridRef.quadrantOffsets[this.quadrantCode][0];
+					this.gridCoords.y += GridRef.quadrantOffsets[this.quadrantCode][1];
 				}
 			} else {
 				this.preciseGridRef = trimmedLocality;
@@ -147,7 +147,7 @@ GridRefGB.prototype.from_string = function(rawGridRef) {
 
 		switch (this.length) {
 			case 10000:
-				trimmedLocality = this.osRef.to_gridref(10000);
+				trimmedLocality = this.gridCoords.to_gridref(10000);
 				this.hectad = trimmedLocality;
 
 				if (tetradCode) {
@@ -155,14 +155,14 @@ GridRefGB.prototype.from_string = function(rawGridRef) {
 					this.tetradLetter = tetradCode;
 					this.tetrad = this.hectad + tetradCode;
 					this.length = 2000; // 2km square
-					this.osRef.x += GridRef.tetradOffsets[tetradCode][0];
-					this.osRef.y += GridRef.tetradOffsets[tetradCode][1];
+					this.gridCoords.x += GridRef.tetradOffsets[tetradCode][0];
+					this.gridCoords.y += GridRef.tetradOffsets[tetradCode][1];
 				} else if (this.quadrantCode) {
 					trimmedLocality += this.quadrantCode;
 					this.quadrant = trimmedLocality;
 					this.length = 5000; // 5km square
-					this.osRef.x += GridRef.quadrantOffsets[this.quadrantCode][0];
-					this.osRef.y += GridRef.quadrantOffsets[this.quadrantCode][1];
+					this.gridCoords.x += GridRef.quadrantOffsets[this.quadrantCode][0];
+					this.gridCoords.y += GridRef.quadrantOffsets[this.quadrantCode][1];
 				}
 				break;
 
@@ -170,22 +170,22 @@ GridRefGB.prototype.from_string = function(rawGridRef) {
 			case 100:
 			case 10:
 			case 1:
-				trimmedLocality = this.osRef.to_gridref(this.length);
-				this.hectad = this.osRef.to_gridref(10000);
+				trimmedLocality = this.gridCoords.to_gridref(this.length);
+				this.hectad = this.gridCoords.to_gridref(10000);
 				this.set_tetrad();
 				break;
 
 			default:
 				this.error = true;
 				this.errorMessage = 'Bad grid square dimension (' + this.length + ' m).';
-				this.osRef = null;
+				this.gridCoords = null;
 				this.length = 0;
 		}
 
 		this.preciseGridRef = trimmedLocality;
 	} else {
 		// no match
-		this.osRef = null;
+		this.gridCoords = null;
 		this.length = 0;
 		this.error = true;
 		this.errorMessage = "Grid reference format not understood. ('" + rawGridRef + "')";
@@ -244,7 +244,7 @@ GridRefGB.prototype.parse_gr_string_without_tetrads = function(gridRef) {
 		if (!GridRef.letterMapping.hasOwnProperty(gridRef.charAt(0)) || !GridRef.letterMapping.hasOwnProperty(gridRef.charAt(1))) {
 			// invalid
 			this.length = 0;
-			this.osRef = null;
+			this.gridCoords = null;
 			return;
 		}
 
@@ -258,7 +258,7 @@ GridRefGB.prototype.parse_gr_string_without_tetrads = function(gridRef) {
 
 	switch (ref.length) {
 		case 2:
-			this.osRef = new GridCoordsGB(
+			this.gridCoords = new GridCoordsGB(
 				x + ref.charAt(0) * 10000, // use first digit of ref
 				y + ref.charAt(1) * 10000 // use second digit of ref
 				);
@@ -266,7 +266,7 @@ GridRefGB.prototype.parse_gr_string_without_tetrads = function(gridRef) {
 			break;
 
 		case 4:
-			this.osRef = new GridCoordsGB(
+			this.gridCoords = new GridCoordsGB(
 				x + Math.floor(ref / 100) * 1000,
 				y + (ref % 100) * 1000
 				);
@@ -274,7 +274,7 @@ GridRefGB.prototype.parse_gr_string_without_tetrads = function(gridRef) {
 			break;
 
 		case 6:
-			this.osRef = new GridCoordsGB(
+			this.gridCoords = new GridCoordsGB(
 				x + Math.floor(ref / 1000) * 100,
 				y + (ref % 1000) * 100
 				);
@@ -282,7 +282,7 @@ GridRefGB.prototype.parse_gr_string_without_tetrads = function(gridRef) {
 			break;
 
 		case 8:
-			this.osRef = new GridCoordsGB(
+			this.gridCoords = new GridCoordsGB(
 				x + Math.floor(ref / 10000) * 10,
 				y + (ref % 10000) * 10
 				);
@@ -290,7 +290,7 @@ GridRefGB.prototype.parse_gr_string_without_tetrads = function(gridRef) {
 			break;
 
 		case 10:
-			this.osRef = new GridCoordsGB(
+			this.gridCoords = new GridCoordsGB(
 				x + Math.floor(ref / 100000),
 				y + (ref % 100000)
 				);
@@ -299,7 +299,7 @@ GridRefGB.prototype.parse_gr_string_without_tetrads = function(gridRef) {
 
 		default:
 			Logger('Bad grid ref length, ref=' + gridRef);
-			this.osRef = null;
+			this.gridCoords = null;
 			this.length = 0;
 	}
 };
@@ -307,7 +307,7 @@ GridRefGB.prototype.parse_gr_string_without_tetrads = function(gridRef) {
 /**
  * gridRef must be a correctly formed OS GB gridref
  * 
- * sets self::osRef
+ * sets self::gridCoords
  * sets self::length
  * sets self::hectad
  * 
@@ -327,7 +327,7 @@ GridRefGB.prototype.parse_wellformed_gb_gr_string_no_tetrads = function(gridRef)
 
 	switch (ref.length) {
 		case 2:
-			this.osRef = new GridCoordsGB(
+			this.gridCoords = new GridCoordsGB(
 				x + ref.charAt(0) * 10000, // use first digit of ref 
 				y + ref.charAt(1) * 10000 // use second digit of ref
 				);
@@ -336,7 +336,7 @@ GridRefGB.prototype.parse_wellformed_gb_gr_string_no_tetrads = function(gridRef)
 			break;
 
 		case 4:
-			this.osRef = new GridCoordsGB(
+			this.gridCoords = new GridCoordsGB(
 				x + (Math.floor(ref / 100) * 1000),
 				y + ((ref % 100) * 1000)
 				);
@@ -345,7 +345,7 @@ GridRefGB.prototype.parse_wellformed_gb_gr_string_no_tetrads = function(gridRef)
 			break;
 
 		case 6:
-			this.osRef = new GridCoordsGB(
+			this.gridCoords = new GridCoordsGB(
 				x + (Math.floor(ref / 1000)) * 100,
 				y + (ref % 1000) * 100
 				);
@@ -354,7 +354,7 @@ GridRefGB.prototype.parse_wellformed_gb_gr_string_no_tetrads = function(gridRef)
 			break;
 
 		case 8:
-			this.osRef = new GridCoordsGB(
+			this.gridCoords = new GridCoordsGB(
 				x + (Math.floor(ref / 10000)) * 10,
 				y + (ref % 10000) * 10
 				);
@@ -363,7 +363,7 @@ GridRefGB.prototype.parse_wellformed_gb_gr_string_no_tetrads = function(gridRef)
 			break;
 
 		case 10:
-			this.osRef = new GridCoordsGB(
+			this.gridCoords = new GridCoordsGB(
 				x + Math.floor(ref / 100000),
 				y + (ref % 100000)
 				);
@@ -372,7 +372,7 @@ GridRefGB.prototype.parse_wellformed_gb_gr_string_no_tetrads = function(gridRef)
 			break;
 
 		default:
-			this.osRef = null;
+			this.gridCoords = null;
 			throw new Error("Bad grid ref length when parsing supposedly well-formed ref, ref='" + gridRef + "'");
 	}
 };

@@ -11,7 +11,7 @@ const GridRefCI = function() {};
 GridRefCI.prototype = new GridRef();
 GridRefCI.prototype.constructor = GridRefCI;
 GridRefCI.prototype.country = 'CI';
-GridRefCI.prototype.NationalRef = GridCoordsCI;
+GridRefCI.prototype.GridCoords = GridCoordsCI;
 
 /**
  *
@@ -39,8 +39,8 @@ GridRefCI.prototype.from_string = function(rawGridRef) {
 		if ((enl = GridRefCI.gridref_string_to_e_n_l(trimmedLocality))) {
 			this.length = enl.length;
 
-			this.osRef = new GridCoordsCI(enl.e, enl.n);
-			this.hectad = this.osRef.to_gridref(10000);
+			this.gridCoords = new GridCoordsCI(enl.e, enl.n);
+			this.hectad = this.gridCoords.to_gridref(10000);
 
 			if (this.length === 10000 && (tetradCode || this.quadrantCode)) {
 				if (tetradCode) {
@@ -48,8 +48,8 @@ GridRefCI.prototype.from_string = function(rawGridRef) {
 					this.tetrad = this.hectad + tetradCode;
 					this.tetradLetter = tetradCode;
 					this.length = 2000; // 2km square
-					this.osRef.x += GridRef.tetradOffsets[tetradCode][0];
-					this.osRef.y += GridRef.tetradOffsets[tetradCode][1];
+					this.gridCoords.x += GridRef.tetradOffsets[tetradCode][0];
+					this.gridCoords.y += GridRef.tetradOffsets[tetradCode][1];
 				} else {
 					// quadrant
 					this.preciseGridRef = trimmedLocality + this.quadrantCode;
@@ -57,8 +57,8 @@ GridRefCI.prototype.from_string = function(rawGridRef) {
 					this.tetrad = '';
 					this.quadrant = this.preciseGridRef;
 					this.length = 5000; // 5km square
-					this.osRef.x += GridRef.quadrantOffsets[this.quadrantCode][0];
-					this.osRef.y += GridRef.quadrantOffsets[this.quadrantCode][1];
+					this.gridCoords.x += GridRef.quadrantOffsets[this.quadrantCode][0];
+					this.gridCoords.y += GridRef.quadrantOffsets[this.quadrantCode][1];
 				}
 			} else {
 				this.preciseGridRef = trimmedLocality;

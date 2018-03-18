@@ -10,7 +10,7 @@ const GridRefIE = function() {};
 GridRefIE.prototype = new GridRef();
 GridRefIE.prototype.constructor = GridRefIE;
 GridRefIE.prototype.country = 'IE';
-GridRefIE.prototype.NationalRef = GridCoordsIE;
+GridRefIE.prototype.GridCoords = GridCoordsIE;
 
 GridRefIE.gridLetter = {
   A: [0,4],
@@ -64,15 +64,15 @@ GridRefIE.prototype.from_string = function(rawGridRef) {
         this.preciseGridRef = this.hectad + this.tetradLetter;
         this.tetrad = this.preciseGridRef;
         this.length = 2000; // 2km square
-        this.osRef.x += GridRefIE.tetradOffsets[this.tetradLetter][0];
-        this.osRef.y += GridRefIE.tetradOffsets[this.tetradLetter][1];
+        this.gridCoords.x += GridRefIE.tetradOffsets[this.tetradLetter][0];
+        this.gridCoords.y += GridRefIE.tetradOffsets[this.tetradLetter][1];
       } else {
         // quadrant
         this.preciseGridRef = this.hectad + this.quadrantCode;
         this.quadrant = this.preciseGridRef;
         this.length = 5000; // 5km square
-        this.osRef.x += GridRefIE.quadrantOffsets[this.quadrantCode][0];
-        this.osRef.y += GridRefIE.quadrantOffsets[this.quadrantCode][1];
+        this.gridCoords.x += GridRefIE.quadrantOffsets[this.quadrantCode][0];
+        this.gridCoords.y += GridRefIE.quadrantOffsets[this.quadrantCode][1];
       }
     } else {
       this.preciseGridRef = trimmedLocality;
@@ -124,7 +124,7 @@ GridRefIE.prototype.parse_gr_string_without_tetrads = function(gridRef) {
 
     if (!/^[ABCDFGHJLMNOQRSTVWXY](?:\d\d){1,5}$/.test(gridRef)) {
       this.length = 0;// mark error state
-      this.osRef = null;
+      this.gridCoords = null;
       return false;
     }
 
@@ -138,13 +138,13 @@ GridRefIE.prototype.parse_gr_string_without_tetrads = function(gridRef) {
       } else {
         Logger("Bad grid ref grid-letter, ref='" + gridRef + "' (Ireland)");
         this.length = 0; // mark error
-        this.osRef = null;
+        this.gridCoords = null;
         return false;
       }
     } else {
       Logger('Bad (empty) Irish grid ref');
       this.length = 0; // mark error
-      this.osRef = null;
+      this.gridCoords = null;
       return false;
     }
 
@@ -153,7 +153,7 @@ GridRefIE.prototype.parse_gr_string_without_tetrads = function(gridRef) {
 
   switch (ref.length) {
     case 2:
-      this.osRef = new GridCoordsIE(
+      this.gridCoords = new GridCoordsIE(
         x + (ref.charAt(0) * 10000),
         y + (ref.charAt(1) * 10000)
       );
@@ -162,7 +162,7 @@ GridRefIE.prototype.parse_gr_string_without_tetrads = function(gridRef) {
       break;
 
     case 4:
-      this.osRef = new GridCoordsIE(
+      this.gridCoords = new GridCoordsIE(
         x + Math.floor(ref / 100) * 1000,
         y + (ref % 100) * 1000
       );
@@ -171,7 +171,7 @@ GridRefIE.prototype.parse_gr_string_without_tetrads = function(gridRef) {
       break;
 
     case 6:
-      this.osRef = new GridCoordsIE(
+      this.gridCoords = new GridCoordsIE(
         x + Math.floor(ref / 1000) * 100,
         y + (ref % 1000) * 100
       );
@@ -180,7 +180,7 @@ GridRefIE.prototype.parse_gr_string_without_tetrads = function(gridRef) {
       break;
 
     case 8:
-      this.osRef = new GridCoordsIE(
+      this.gridCoords = new GridCoordsIE(
         x + Math.floor(ref / 10000) * 10,
         y + (ref % 10000) * 10
       );
@@ -189,7 +189,7 @@ GridRefIE.prototype.parse_gr_string_without_tetrads = function(gridRef) {
       break;
 
     case 10:
-      this.osRef = new GridCoordsIE(
+      this.gridCoords = new GridCoordsIE(
         x + Math.floor(ref / 100000),
         y + (ref % 100000)
       );
@@ -200,7 +200,7 @@ GridRefIE.prototype.parse_gr_string_without_tetrads = function(gridRef) {
     default:
       Logger("Bad grid ref length, ref='" + gridRef + "' (Ireland)");
       this.length = 0;
-      this.osRef = null;
+      this.gridCoords = null;
       return false;
   }
   return true;
