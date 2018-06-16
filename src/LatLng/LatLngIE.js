@@ -75,7 +75,7 @@ LatLngIE.prototype.to_os_coords = function() {
 
 /**
  * convert Irish projection to WGS84 (for Google Maps)
- * see http://www.dorcus.co.uk/carabus/ll_ngr.html
+ * see http://www.carabus.co.uk/ll_ngr.html
 */
 LatLngIE.prototype.to_WGS84 = function() {
 	const IRISH_AXIS = 6377340.189;

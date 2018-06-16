@@ -1,3 +1,6 @@
+(function () {
+'use strict';
+
 var GridRef = function () {
 
   /**
@@ -223,14 +226,14 @@ var GridCoordsGB = function () {
 			firstLetter = hundredkmE < 5 ? 'H' : 'J';
 		}
 
-		//var secondLetter = '';
+		var secondLetter = '';
 		var index = 65 + (4 - hundredkmN % 5) * 5 + hundredkmE % 5;
 
 		if (index >= 73) {
 			index++;
 		}
 
-		var secondLetter = String.fromCharCode(index);
+		secondLetter = String.fromCharCode(index);
 
 		return _e_n_to_gr(firstLetter + secondLetter, this.x - 100000 * hundredkmE, this.y - 100000 * hundredkmN, precision ? precision : 1);
 	};
@@ -284,8 +287,8 @@ var GridCoordsGB = function () {
 		var a = 6377563.396; // airy1830->maj;
 		//var b        = 6356256.909; // airy1830->min;
 		var eSquared = 0.00667054007; // ((maj * maj) - (min * min)) / (maj * maj); // airy1830->ecc;
-		//var phi = 0.0;
-		//var lambda = 0.0;
+		var phi = 0.0;
+		var lambda = 0.0;
 		var E = this.x;
 		var N = this.y;
 		var n = 0.0016732203289875; //(a - b) / (a + b);
@@ -320,8 +323,8 @@ var GridCoordsGB = function () {
 		var XI = secphiPrime / (6.0 * v * v * v) * (v / rho + 2 * tanphiPrime2);
 		var XII = secphiPrime / (120.0 * Math.pow(v, 5.0)) * (5.0 + 28.0 * tanphiPrime2 + 24.0 * tanphiPrime2 * tanphiPrime2);
 		var XIIA = secphiPrime / (5040.0 * Math.pow(v, 7.0)) * (61.0 + 662.0 * tanphiPrime2 + 1320.0 * tanphiPrime2 * tanphiPrime2 + 720.0 * tanphiPrime2 * tanphiPrime2 * tanphiPrime2);
-		var phi = phiPrime - VII * Math.pow(E - E0, 2.0) + VIII * Math.pow(E - E0, 4.0) - IX * Math.pow(E - E0, 6.0);
-		var lambda = lambda0 + X * (E - E0) - XI * Math.pow(E - E0, 3.0) + XII * Math.pow(E - E0, 5.0) - XIIA * Math.pow(E - E0, 7.0);
+		phi = phiPrime - VII * Math.pow(E - E0, 2.0) + VIII * Math.pow(E - E0, 4.0) - IX * Math.pow(E - E0, 6.0);
+		lambda = lambda0 + X * (E - E0) - XI * Math.pow(E - E0, 3.0) + XII * Math.pow(E - E0, 5.0) - XIIA * Math.pow(E - E0, 7.0);
 
 		return new LatLngGB(rad2deg * phi, rad2deg * lambda).to_WGS84();
 	};
@@ -1048,13 +1051,13 @@ var GridCoordsCI = /*@__PURE__*/function () {
 		var XIIA = clatm1 / (5040 * Math.pow(nu, 7)) * (61 + 662 * tlat2 + 1320 * tlat4 + 720 * tlat6);
 		var lambdap = lam0 + Et * X - Et * Et * Et * XI + Math.pow(Et, 5) * XII - Math.pow(Et, 7) * XIIA;
 
-		// var WGS84_AXIS = 6378137;
-		// var WGS84_ECCENTRIC = 0.00669438037928458;
-        //
-		// var INT24_AXIS = 6378388.000;
-		// var INT24_ECCENTRIC = 0.0067226700223333;
-		// var height = 10; // dummy height
-		// var latLngRadians = LatLng._transform(phip, lambdap, INT24_AXIS, INT24_ECCENTRIC, height, WGS84_AXIS, WGS84_ECCENTRIC, -83.901, -98.127, -118.635, 0, 0, 0, 0);
+		var WGS84_AXIS = 6378137;
+		var WGS84_ECCENTRIC = 0.00669438037928458;
+
+		var INT24_AXIS = 6378388.000;
+		var INT24_ECCENTRIC = 0.0067226700223333;
+		var height = 10; // dummy height
+		var latLngRadians = LatLng._transform(phip, lambdap, INT24_AXIS, INT24_ECCENTRIC, height, WGS84_AXIS, WGS84_ECCENTRIC, -83.901, -98.127, -118.635, 0, 0, 0, 0);
 
 		var latLngRadians = GridCoordsCI.convert_to_wgs(phip, lambdap);
 
@@ -1116,7 +1119,7 @@ var GridRefCI = /*@__PURE__*/function () {
 	GridRefCI.prototype = new GridRef();
 	GridRefCI.prototype.constructor = GridRefCI;
 	GridRefCI.prototype.country = 'CI';
-	GridRefCI.prototype.GridCoords = GridCoordsCI;
+	GridRefCI.prototype.NationalRef = GridCoordsCI;
 
 	/**
   *
@@ -1190,8 +1193,7 @@ var GridRefCI = /*@__PURE__*/function () {
   *
   *
   * @param {string} gridRef plain string without tetrad or quadrant suffix
-  * @return {(boolean|{e : number, n : number, length : number})}
-	 * false on error or object
+  * @return false|{'eKm' : easting, 'nKm' : northing, 'lengthKm' : length}
   */
 	GridRefCI.gridref_string_to_e_n_l = function (gridRef) {
 		var northOffset, x, y, length;
@@ -1264,7 +1266,7 @@ var GridRefGB = function () {
 	GridRefGB.prototype = new GridRef();
 	GridRefGB.prototype.constructor = GridRefGB;
 	GridRefGB.prototype.country = 'GB';
-	GridRefGB.prototype.GridCoords = GridCoordsGB;
+	GridRefGB.prototype.NationalRef = GridCoordsGB;
 
 	/**
   * gridref known to have correct syntax
@@ -1616,7 +1618,7 @@ var GridRefIE = function () {
   GridRefIE.prototype = new GridRef();
   GridRefIE.prototype.constructor = GridRefIE;
   GridRefIE.prototype.country = 'IE';
-  GridRefIE.prototype.GridCoords = GridCoordsIE;
+  GridRefIE.prototype.NationalRef = GridCoordsIE;
 
   GridRefIE.gridLetter = {
     A: [0, 4],
@@ -1858,5 +1860,8 @@ GridRef.from_string = function (rawGridRef) {
 	return false;
 };
 
-export { GridRef, GridRefCI, GridRefGB, GridRefIE, LatLngGB, LatLngCI, LatLngIE, LatLngWGS84, GridCoords, GridCoordsCI, GridCoordsIE, GridCoordsGB };
-//# sourceMappingURL=gridrefutils.js.map
+//import {GridRefGB} from './GridRef/GridRefGB';
+
+var parsed = GridRefGB.from_string('SD59');
+
+}());
