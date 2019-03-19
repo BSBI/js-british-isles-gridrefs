@@ -1,4 +1,4 @@
-var GridRef = function () {
+var GridRef = /*@__PURE__*/function () {
 
   /**
    * @constructor
@@ -111,6 +111,12 @@ var GridRef = function () {
     this.tetrad = this.hectad + this.tetradLetter;
   };
 
+  /**
+   *
+   * @param {number} rawPrecision
+   * @param {number} minPrecision
+   * @returns {number}
+   */
   GridRef.get_normalized_precision = function (rawPrecision, minPrecision) {
     return rawPrecision > 2000 ? 10000 : rawPrecision > 1000 ? 2000 : rawPrecision > 100 ? 1000 : rawPrecision > 10 ? 100 : rawPrecision > 1 ? 10 : minPrecision ? minPrecision : 1;
   };
@@ -121,7 +127,7 @@ var GridRef = function () {
 var deg2rad = Math.PI / 180;
 var rad2deg = 180.0 / Math.PI;
 
-var LatLng = function () {
+var LatLng = /*@__PURE__*/function () {
 
 	/**
   * represents lat lng
@@ -130,7 +136,7 @@ var LatLng = function () {
   * @param {number} lng
   * @constructor
   */
-	var LatLng = function LatLng(lat, lng) {
+	var LatLng = /*@__PURE__*/function LatLng(lat, lng) {
 		this.lat = lat;
 		this.lng = lng;
 	};
@@ -186,7 +192,7 @@ var LatLngWGS84 = function LatLngWGS84(lat, lng) {
   this.lng = lng;
 };
 
-var GridCoordsGB = function () {
+var GridCoordsGB = /*@__PURE__*/function () {
 	/**
   *
   * @param {number} easting metres
@@ -223,7 +229,6 @@ var GridCoordsGB = function () {
 			firstLetter = hundredkmE < 5 ? 'H' : 'J';
 		}
 
-		//var secondLetter = '';
 		var index = 65 + (4 - hundredkmN % 5) * 5 + hundredkmE % 5;
 
 		if (index >= 73) {
@@ -284,8 +289,8 @@ var GridCoordsGB = function () {
 		var a = 6377563.396; // airy1830->maj;
 		//var b        = 6356256.909; // airy1830->min;
 		var eSquared = 0.00667054007; // ((maj * maj) - (min * min)) / (maj * maj); // airy1830->ecc;
-		//var phi = 0.0;
-		//var lambda = 0.0;
+		//var phi      = 0.0;
+		//var lambda   = 0.0;
 		var E = this.x;
 		var N = this.y;
 		var n = 0.0016732203289875; //(a - b) / (a + b);
@@ -328,7 +333,7 @@ var GridCoordsGB = function () {
 	return GridCoordsGB;
 }();
 
-var LatLngGB = function () {
+var LatLngGB = /*@__PURE__*/function () {
   /**
    * represents lat lng as OSGB1936 (Ordnance Survey projection)
    *
@@ -590,7 +595,7 @@ var LatLngCI = /*@__PURE__*/function () {
 	return LatLngCI;
 }();
 
-var GridCoordsIE = function () {
+var GridCoordsIE = /*@__PURE__*/function () {
 
 	/**
   *
@@ -744,7 +749,7 @@ var GridCoordsIE = function () {
 	return GridCoordsIE;
 }();
 
-var LatLngIE = function () {
+var LatLngIE = /*@__PURE__*/function () {
   /**
    * represents lat lng as Modified Airy (Irish grid projection)
    *
@@ -816,7 +821,7 @@ var LatLngIE = function () {
 
   /**
    * convert Irish projection to WGS84 (for Google Maps)
-   * see http://www.dorcus.co.uk/carabus/ll_ngr.html
+   * see http://www.carabus.co.uk/ll_ngr.html
   */
   LatLngIE.prototype.to_WGS84 = function () {
     var IRISH_AXIS = 6377340.189;
@@ -879,7 +884,7 @@ var LatLngIE = function () {
   return LatLngIE;
 }();
 
-var GridCoords = function () {
+var GridCoords = /*@__PURE__*/function () {
 
 	/**
   * abstract representation of a gridref co-ordinate pair
@@ -918,7 +923,7 @@ var GridCoords = function () {
 	GridCoords.from_latlng = function (lat, lng) {
 		// test if GB
 		if (lng >= -8.74 && lat > 49.88) {
-			// lng extreme must accomodate St Kilda
+			// lng extreme must accommodate St Kilda
 
 			var os = new LatLngGB.from_wgs84(new LatLngWGS84(lat, lng)).to_os_coords();
 			if (os.x >= 0 && os.is_gb_hectad()) {
@@ -1050,11 +1055,11 @@ var GridCoordsCI = /*@__PURE__*/function () {
 
 		// var WGS84_AXIS = 6378137;
 		// var WGS84_ECCENTRIC = 0.00669438037928458;
-        //
+		//
 		// var INT24_AXIS = 6378388.000;
 		// var INT24_ECCENTRIC = 0.0067226700223333;
-		// var height = 10; // dummy height
-		// var latLngRadians = LatLng._transform(phip, lambdap, INT24_AXIS, INT24_ECCENTRIC, height, WGS84_AXIS, WGS84_ECCENTRIC, -83.901, -98.127, -118.635, 0, 0, 0, 0);
+		// var height = 10;  // dummy height
+		// //var latLngRadians = LatLng._transform(phip, lambdap, INT24_AXIS, INT24_ECCENTRIC, height, WGS84_AXIS, WGS84_ECCENTRIC, -83.901, -98.127, -118.635, 0, 0, 0, 0);
 
 		var latLngRadians = GridCoordsCI.convert_to_wgs(phip, lambdap);
 
@@ -1191,7 +1196,7 @@ var GridRefCI = /*@__PURE__*/function () {
   *
   * @param {string} gridRef plain string without tetrad or quadrant suffix
   * @return {(boolean|{e : number, n : number, length : number})}
-	 * false on error or object
+  * returns false on error or object {'e' : easting, 'n' : northing, 'length' : length}
   */
 	GridRefCI.gridref_string_to_e_n_l = function (gridRef) {
 		var northOffset, x, y, length;
@@ -1254,7 +1259,7 @@ var GridRefCI = /*@__PURE__*/function () {
 	return GridRefCI;
 }();
 
-var GridRefGB = function () {
+var GridRefGB = /*@__PURE__*/function () {
 
 	/**
   * @constructor
@@ -1368,8 +1373,8 @@ var GridRefGB = function () {
 						this.tetradLetter = tetradCode;
 						this.tetrad = this.hectad + tetradCode;
 						this.length = 2000; // 2km square
-						this.gridCoords.x += GridRef.tetradKmOffsets[tetradCode][0];
-						this.gridCoords.y += GridRef.tetradKmOffsets[tetradCode][1];
+						this.gridCoords.x += GridRef.tetradOffsets[tetradCode][0];
+						this.gridCoords.y += GridRef.tetradOffsets[tetradCode][1];
 					} else {
 						// quadrant
 						this.preciseGridRef = trimmedLocality + this.quadrantCode;
@@ -1567,7 +1572,7 @@ var GridRefGB = function () {
 
 		switch (ref.length) {
 			case 2:
-				this.gridCoords = new GridCoordsGB(x + ref.charAt(0) * 10000, // use first digit of ref
+				this.gridCoords = new GridCoordsGB(x + ref.charAt(0) * 10000, // use first digit of ref 
 				y + ref.charAt(1) * 10000 // use second digit of ref
 				);
 				this.length = 10000; //10 km square
@@ -1607,7 +1612,7 @@ var GridRefGB = function () {
 	return GridRefGB;
 }();
 
-var GridRefIE = function () {
+var GridRefIE = /*@__PURE__*/function () {
   /**
    * @constructor
    */
@@ -1804,7 +1809,7 @@ var GridRefIE = function () {
  * crudely tries to determine the country by trying each country in turn
  * 
  * @param {string} rawGridRef
- * @return GridRef|FALSE
+ * @return {(GridRef|boolean)}
  */
 GridRef.from_string = function (rawGridRef) {
 	var parser;
