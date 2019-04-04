@@ -3,7 +3,7 @@ import {LatLngCI} from '../LatLng/LatLngCI';
 import {LatLngIE} from '../LatLng/LatLngIE';
 import {LatLngWGS84} from '../LatLng/LatLngWGS84';
 
-export const GridCoords = /*@__PURE__*/(function() {
+// export const GridCoords = /*@__PURE__*/(function() {
 
 /**
  * abstract representation of a gridref co-ordinate pair
@@ -12,7 +12,7 @@ export const GridCoords = /*@__PURE__*/(function() {
  * @constructor
  * @returns {GridCoords}
  */
-const GridCoords = function () {};
+export const GridCoords = function () {};
 
 /**
  * tetrad letters ordered by easting then northing (steps of 2000m)
@@ -86,8 +86,8 @@ GridCoords.prototype.toString = function() {
 	return this.x + ',' + this.y;
 };
 
-return GridCoords;
-})();
+// return GridCoords;
+// })();
 
 /**
  * 

@@ -4,7 +4,7 @@ import { LatLng } from '../LatLng/LatLng';
 import { rad2deg } from '../constants';
 
 
-export const GridCoordsCI = /*@__PURE__*/(function() {
+// export const GridCoordsCI = /*@__PURE__*/(function() {
 
 /**
  *
@@ -13,7 +13,7 @@ export const GridCoordsCI = /*@__PURE__*/(function() {
  * @constructor
  * @returns {GridCoordsCI}
  */
-const GridCoordsCI = function(easting, northing) {
+export const GridCoordsCI = function(easting, northing) {
   this.x = easting;
   this.y = northing;
 };
@@ -117,5 +117,5 @@ GridCoordsCI.prototype.to_hectad = function() {
     return null;
 };
 
-return GridCoordsCI;
-})();
+// return GridCoordsCI;
+// })();

@@ -1,15 +1,17 @@
-# BIGU
+# js-british-isles-gridrefs
 
 British Isles GridRef Utils
 
 
-## Initialization
-
-### Step 1: Get the library
-- Install using Bower: `bower install 'kazlauskis/BUGU'` or
-- Git clone: `git clone git://github.com/kazlauskis/BIGU`
+## Building the library
 
 
+```bash
+git clone git://github.com/japonicus/js-british-isles-gridrefs
+cd js-british-isles-gridrefs
+npm install
+npm build
+```
 ### Step 2: include JS files
 
 You can find them in the root folder of the library.
