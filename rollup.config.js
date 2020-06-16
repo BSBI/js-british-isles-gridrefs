@@ -1,7 +1,9 @@
 // rollup.config.js
-import resolve from 'rollup-plugin-node-resolve';
-import babel from 'rollup-plugin-babel';
-import uglify from 'rollup-plugin-uglify';
+import resolve from '@rollup/plugin-node-resolve';
+import babel from '@rollup/plugin-babel';
+import { terser } from 'rollup-plugin-terser';
+
+const production = !process.env.ROLLUP_WATCH;
 
 export default {
     input: 'src/index.js',
@@ -18,8 +20,10 @@ export default {
 		}
 	  }),
     babel({
-      exclude: 'node_modules/**' // only transpile our source code
-    })
+      exclude: 'node_modules/**', // only transpile our source code
+      babelHelpers: 'runtime'
+    }),
+    production && terser() // minify, but only in production
 	//(process.env.NODE_ENV === 'production' && uglify())
 	//uglify()
   ]

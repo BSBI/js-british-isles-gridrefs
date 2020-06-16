@@ -2,5 +2,7 @@
   "presets": [
     ["@babel/env", {"modules": false}]
   ],
-  "plugins": []
+  "plugins": [
+    "@babel/plugin-transform-runtime"
+  ]
 }
