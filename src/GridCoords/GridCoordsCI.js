@@ -2,6 +2,7 @@ import { GridCoords, _e_n_to_gr } from './GridCoords';
 import { LatLngWGS84 } from '../LatLng/LatLngWGS84';
 import { LatLng } from '../LatLng/LatLng';
 import { rad2deg } from '../constants';
+import {LatLngCI} from "../LatLng/LatLngCI";
 
 
 // export const GridCoordsCI = /*@__PURE__*/(function() {
@@ -24,13 +25,13 @@ GridCoordsCI.prototype.country = 'CI';
 
 /**
  * convert easting,northing to a WGS84 lat lng
- * 
+ *
  * @returns {LatLngWGS84}
  */
 GridCoordsCI.prototype.to_latLng = function() {
 	//nX = north;
 	//ex = east;
-	
+
 	var a = 6378388.000;       // INT24 ED50 semi-major
 	var b = 6356911.946;       // INT24 ED50 semi-minor
 	var e0 = 500000;           // easting of false origin
@@ -70,14 +71,15 @@ GridCoordsCI.prototype.to_latLng = function() {
 	// var height = 10;  // dummy height
 	// //var latLngRadians = LatLng._transform(phip, lambdap, INT24_AXIS, INT24_ECCENTRIC, height, WGS84_AXIS, WGS84_ECCENTRIC, -83.901, -98.127, -118.635, 0, 0, 0, 0);
 
-	var latLngRadians = GridCoordsCI.convert_to_wgs(phip, lambdap);
+	// var latLngRadians = GridCoordsCI.convert_to_wgs(phip, lambdap);
+	// return new LatLngWGS84(latLngRadians.lat * rad2deg, latLngRadians.lng * rad2deg);
 
-	return new LatLngWGS84(latLngRadians.lat * rad2deg, latLngRadians.lng * rad2deg);
+	return (new LatLngCI(rad2deg * phip, rad2deg * lambdap)).to_WGS84()
 };
-	
+
 const _initial_lat = function(north, n0, af0, phi0, n, bf0) {
 	var phi1 = ((north - n0) / af0) + phi0;
-	var M = GridCoordsCI.marc(bf0, n, phi0, phi1);
+	var M = LatLng._Marc(bf0, n, phi0, phi1);
 	var phi2 = ((north - n0 - M) / af0) + phi1;
 	var ind = 0;
 	while ((Math.abs(north - n0 - M) > 0.00001) && (ind < 20))  // max 20 iterations in case of error
@@ -91,7 +93,7 @@ const _initial_lat = function(north, n0, af0, phi0, n, bf0) {
 };
 
 /**
- * 
+ *
  * @param {number} precision metres
  * @returns {String}
  */
@@ -105,7 +107,7 @@ GridCoordsCI.prototype.to_gridref = function(precision) {
 };
 
 /**
- * 
+ *
  * @returns {?string}
  */
 GridCoordsCI.prototype.to_hectad = function() {
