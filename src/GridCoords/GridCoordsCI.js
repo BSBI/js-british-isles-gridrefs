@@ -2,8 +2,6 @@ import { GridCoords, _e_n_to_gr } from './GridCoords';
 import { LatLngWGS84 } from '../LatLng/LatLngWGS84';
 import { LatLng } from '../LatLng/LatLng';
 import { rad2deg } from '../constants';
-import {LatLngCI} from "../LatLng/LatLngCI";
-
 
 // export const GridCoordsCI = /*@__PURE__*/(function() {
 
@@ -71,10 +69,23 @@ GridCoordsCI.prototype.to_latLng = function() {
 	// var height = 10;  // dummy height
 	// //var latLngRadians = LatLng._transform(phip, lambdap, INT24_AXIS, INT24_ECCENTRIC, height, WGS84_AXIS, WGS84_ECCENTRIC, -83.901, -98.127, -118.635, 0, 0, 0, 0);
 
-	// var latLngRadians = GridCoordsCI.convert_to_wgs(phip, lambdap);
-	// return new LatLngWGS84(latLngRadians.lat * rad2deg, latLngRadians.lng * rad2deg);
+	var latLngRadians = convert_to_wgs(phip, lambdap);
+	return new LatLngWGS84(latLngRadians.lat * rad2deg, latLngRadians.lng * rad2deg);
 
-	return (new LatLngCI(rad2deg * phip, rad2deg * lambdap)).to_WGS84()
+	//return (new LatLngCI(rad2deg * phip, rad2deg * lambdap)).to_WGS84()
+};
+
+const convert_to_wgs = function(phip, lambdap) {
+	var WGS84_AXIS = 6378137;
+	var WGS84_ECCENTRIC = 0.00669438037928458;
+	//OSGB_AXIS = 6377563.396;
+	//OSGB_ECCENTRIC = 0.0066705397616;
+	//IRISH_AXIS = 6377340.189;
+	//IRISH_ECCENTRIC = 0.00667054015;
+	var INT24_AXIS = 6378388.000;
+	var INT24_ECCENTRIC = 0.0067226700223333;
+	var height = 10;  // dummy height
+	return LatLng._transform(phip, lambdap, INT24_AXIS, INT24_ECCENTRIC, height, WGS84_AXIS, WGS84_ECCENTRIC, -83.901, -98.127, -118.635, 0, 0, 0, 0);
 };
 
 const _initial_lat = function(north, n0, af0, phi0, n, bf0) {
