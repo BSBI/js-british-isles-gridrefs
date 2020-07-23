@@ -16,7 +16,7 @@ GridRefGB.prototype.GridCoords = GridCoordsGB;
 /**
  * gridref known to have correct syntax
  * may have tetrad or quadrant suffix
- * 
+ *
  * @param {string} rawGridRef
  * @throws Error
  */
@@ -24,7 +24,7 @@ GridRefGB.prototype.parse_well_formed = function(rawGridRef) {
 
 	if (rawGridRef.length >= 5 && /^[A-Z]/.test(rawGridRef.charAt(4))) {
 		// tetrad or quadrant
-		
+
 		if (GridRef.quadrantOffsets.hasOwnProperty(rawGridRef.substr(rawGridRef.length - 2))) {
 			this.quadrantCode = rawGridRef.substr(rawGridRef.length - 2);
 		} else {
@@ -32,7 +32,7 @@ GridRefGB.prototype.parse_well_formed = function(rawGridRef) {
 		}
 
 		rawGridRef = rawGridRef.substr(0, 4);
-	} 
+	}
 
 	//this sets easting/northing, length and hectad
 	this.parse_wellformed_gb_gr_string_no_tetrads(rawGridRef);
@@ -58,12 +58,12 @@ GridRefGB.prototype.parse_well_formed = function(rawGridRef) {
 		if (this.length <= 1000) {
 			// calculate tetrad for precise gridref
 			this.set_tetrad();
-		} 
+		}
 	}
 };
 
 /**
- * 
+ *
  * @param {string} rawGridRef
  * @throws Error
  */
@@ -75,7 +75,7 @@ GridRefGB.prototype.from_string = function(rawGridRef) {
 
 	if (/[ABCDEFGHIJKLMNPQRSTUVWXYZ]$/.test(trimmedLocality)) {
 		// tetrad or quadrant
-		
+
 		if (GridRef.quadrantOffsets.hasOwnProperty(trimmedLocality.substr(trimmedLocality.length - 2))) {
 			this.quadrantCode = trimmedLocality.substr(trimmedLocality.length - 2);
 			trimmedLocality = trimmedLocality.substr(0, trimmedLocality.length - 2);
@@ -101,7 +101,7 @@ GridRefGB.prototype.from_string = function(rawGridRef) {
 		this.errorMessage = "Misplaced vice-county code in grid-reference field. ('" + trimmedLocality + "')";
 		this.gridCoords = null;
 		this.length = 0;
-	} else if ((ref = trimmedLocality.match(/^([A-Z]{2}(?:\d\d){1,5})$/)) !== null) {
+	} else if ((ref = trimmedLocality.match(/^([HJNOST][ABCDEFGHJKLMNOPQRSTUVWXYZ](?:\d\d){1,5})$/)) !== null) {
 		trimmedLocality = ref[0]; //grid reference
 
 		this.parse_wellformed_gb_gr_string_no_tetrads(trimmedLocality);
@@ -195,12 +195,12 @@ GridRefGB.prototype.from_string = function(rawGridRef) {
 /**
  * sets easting, northing and length (in km)
  * source grid-reference need not be well-formed
- * 
+ *
  * @param {string} gridRef either nn/nn... or aann...
  */
 GridRefGB.prototype.parse_gr_string_without_tetrads = function(gridRef) {
 	var matches, x, y, ref;
-	
+
 	if ((matches = gridRef.match(/^(\d{2})\/((?:\d\d){1,5})$/)) !== null) {
 
 		// old style numerical sheet ref XY/nnnnnn
@@ -306,17 +306,17 @@ GridRefGB.prototype.parse_gr_string_without_tetrads = function(gridRef) {
 
 /**
  * gridRef must be a correctly formed OS GB gridref
- * 
+ *
  * sets self::gridCoords
  * sets self::length
  * sets self::hectad
- * 
+ *
  * @param {string} gridRef modern alpha-numeric format with no suffixes
  * @throws Error
  */
 GridRefGB.prototype.parse_wellformed_gb_gr_string_no_tetrads = function(gridRef) {
 	var char1, char2, ref, x, y;
-	
+
 	// modern alphabetical sheet refs only
 	char1 = GridRef.letterMapping[gridRef.charAt(0)];
 	char2 = GridRef.letterMapping[gridRef.charAt(1)];
@@ -328,7 +328,7 @@ GridRefGB.prototype.parse_wellformed_gb_gr_string_no_tetrads = function(gridRef)
 	switch (ref.length) {
 		case 2:
 			this.gridCoords = new GridCoordsGB(
-				x + ref.charAt(0) * 10000, // use first digit of ref 
+				x + ref.charAt(0) * 10000, // use first digit of ref
 				y + ref.charAt(1) * 10000 // use second digit of ref
 				);
 			this.length = 10000; //10 km square
