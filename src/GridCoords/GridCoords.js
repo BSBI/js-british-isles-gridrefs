@@ -23,6 +23,22 @@ export class GridCoords {
 	constructor() {
 	}
 
+	/**
+	 * convert easting,northing to a WGS84 lat lng
+	 * @abstract
+	 * @returns {LatLngWGS84}
+	 */
+	to_latLng() {
+	}
+
+	/**
+	 *
+	 * @param {number} precision metres
+	 * @abstract
+	 * @returns {string}
+	 */
+	to_gridref(precision) {
+	}
 
 	/**
 	 * tetrad letters ordered by easting then northing (steps of 2000m)

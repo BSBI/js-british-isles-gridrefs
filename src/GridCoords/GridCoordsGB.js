@@ -40,9 +40,9 @@ export class GridCoordsGB extends GridCoords {
 	 * @returns {string}
 	 */
 	to_gridref(precision) {
-		var hundredkmE = this.x / 100000 | 0; // Math.floor(this.x / 100000);
-		var hundredkmN = this.y / 100000 | 0; // Math.floor(this.y / 100000);
-		var firstLetter = '';
+		const hundredkmE = this.x / 100000 | 0; // Math.floor(this.x / 100000);
+		const hundredkmN = this.y / 100000 | 0; // Math.floor(this.y / 100000);
+		let firstLetter;
 		if (hundredkmN < 5) {
 			firstLetter = (hundredkmE < 5) ? 'S' : 'T';
 		} else if (hundredkmN < 10) {
@@ -52,13 +52,13 @@ export class GridCoordsGB extends GridCoords {
 		}
 
 
-		var index = 65 + ((4 - (hundredkmN % 5)) * 5) + (hundredkmE % 5);
+		let index = 65 + ((4 - (hundredkmN % 5)) * 5) + (hundredkmE % 5);
 
 		if (index >= 73) {
 			index++;
 		}
 
-		var secondLetter = String.fromCharCode(index);
+		const secondLetter = String.fromCharCode(index);
 
 		return _e_n_to_gr(
 			firstLetter + secondLetter,
@@ -73,9 +73,9 @@ export class GridCoordsGB extends GridCoords {
 	 * @return {string} hectad
 	 */
 	to_hectad() {
-		var hundredkmE = this.x / 100000 | 0; // Math.floor(easting / 100000);
-		var hundredkmN = this.y / 100000 | 0; // Math.floor(northing / 100000);
-		var firstLetter = "";
+		const hundredkmE = this.x / 100000 | 0; // Math.floor(easting / 100000);
+		const hundredkmN = this.y / 100000 | 0; // Math.floor(northing / 100000);
+		let firstLetter;
 		if (hundredkmN < 5) {
 			firstLetter = (hundredkmE < 5) ? 'S' : 'T';
 		} else if (hundredkmN < 10) {
@@ -84,7 +84,7 @@ export class GridCoordsGB extends GridCoords {
 			firstLetter = (hundredkmE < 5) ? 'H' : 'J';
 		}
 
-		var index = 65 + ((4 - (hundredkmN % 5)) * 5) + (hundredkmE % 5);
+		let index = 65 + ((4 - (hundredkmN % 5)) * 5) + (hundredkmE % 5);
 
 		if (index >= 73) {
 			index++;
@@ -113,19 +113,19 @@ export class GridCoordsGB extends GridCoords {
 		//airy1830 = RefEll::airy1830(); //new RefEll(6377563.396, 6356256.909);
 		//var OSGB_F0  = 0.9996012717;
 		//var N0       = -100000.0;
-		var E0 = 400000.0;
-		var phi0 = 0.85521133347722; //deg2rad(49.0);
-		var lambda0 = -0.034906585039887; //deg2rad(-2.0);
-		var a = 6377563.396; // airy1830->maj;
+		const E0 = 400000.0;
+		const phi0 = 0.85521133347722; //deg2rad(49.0);
+		const lambda0 = -0.034906585039887; //deg2rad(-2.0);
+		const a = 6377563.396; // airy1830->maj;
 		//var b        = 6356256.909; // airy1830->min;
-		var eSquared = 0.00667054007; // ((maj * maj) - (min * min)) / (maj * maj); // airy1830->ecc;
+		const eSquared = 0.00667054007; // ((maj * maj) - (min * min)) / (maj * maj); // airy1830->ecc;
 		//var phi      = 0.0;
 		//var lambda   = 0.0;
-		var E = this.x;
-		var N = this.y;
-		var n = 0.0016732203289875; //(a - b) / (a + b);
-		var M;
-		var phiPrime = ((N + 100000) / (a * 0.9996012717)) + phi0;
+		const E = this.x;
+		const N = this.y;
+		const n = 0.0016732203289875; //(a - b) / (a + b);
+		let M;
+		let phiPrime = ((N + 100000) / (a * 0.9996012717)) + phi0;
 
 		// 15 / 8 === 1.875
 		// 5 / 4 === 1.25
@@ -149,40 +149,40 @@ export class GridCoordsGB extends GridCoords {
 			phiPrime += M / 6375020.48098897; // (N - N0 - M) / (a * OSGB_F0);
 		} while (M >= 0.001);
 
-		var sinphiPrime2 = Math.sin(phiPrime) * Math.sin(phiPrime);
-		var tanphiPrime2 = Math.tan(phiPrime) * Math.tan(phiPrime);
-		var secphiPrime = 1.0 / Math.cos(phiPrime);
+		const sinphiPrime2 = Math.sin(phiPrime) * Math.sin(phiPrime);
+		const tanphiPrime2 = Math.tan(phiPrime) * Math.tan(phiPrime);
+		const secphiPrime = 1.0 / Math.cos(phiPrime);
 
-		var v = a * 0.9996012717 * Math.pow(1.0 - eSquared * sinphiPrime2, -0.5);
+		const v = a * 0.9996012717 * Math.pow(1.0 - eSquared * sinphiPrime2, -0.5);
 
-		var rho =
+		const rho =
 			a
 			* 0.9996012717
 			* (1.0 - eSquared)
 			* Math.pow(1.0 - eSquared * sinphiPrime2, -1.5);
-		var etaSquared = (v / rho) - 1.0;
-		var VII = Math.tan(phiPrime) / (2 * rho * v);
-		var VIII =
+		const etaSquared = (v / rho) - 1.0;
+		const VII = Math.tan(phiPrime) / (2 * rho * v);
+		const VIII =
 			(Math.tan(phiPrime) / (24.0 * rho * Math.pow(v, 3.0)))
 			* (5.0
 				+ (3.0 * tanphiPrime2)
 				+ etaSquared
 				- (9.0 * tanphiPrime2 * etaSquared));
-		var IX =
+		const IX =
 			(Math.tan(phiPrime) / (720.0 * rho * Math.pow(v, 5.0)))
 			* (61.0
 				+ (90.0 * tanphiPrime2)
 				+ (45.0 * tanphiPrime2 * tanphiPrime2));
-		var X = secphiPrime / v;
-		var XI =
+		const X = secphiPrime / v;
+		const XI =
 			(secphiPrime / (6.0 * v * v * v))
 			* ((v / rho) + (2 * tanphiPrime2));
-		var XII =
+		const XII =
 			(secphiPrime / (120.0 * Math.pow(v, 5.0)))
 			* (5.0
 				+ (28.0 * tanphiPrime2)
 				+ (24.0 * tanphiPrime2 * tanphiPrime2));
-		var XIIA =
+		const XIIA =
 			(secphiPrime / (5040.0 * Math.pow(v, 7.0)))
 			* (61.0
 				+ (662.0 * tanphiPrime2)
@@ -191,12 +191,12 @@ export class GridCoordsGB extends GridCoords {
 					* tanphiPrime2
 					* tanphiPrime2
 					* tanphiPrime2));
-		var phi =
+		const phi =
 			phiPrime
 			- (VII * Math.pow(E - E0, 2.0))
 			+ (VIII * Math.pow(E - E0, 4.0))
 			- (IX * Math.pow(E - E0, 6.0));
-		var lambda =
+		const lambda =
 			lambda0
 			+ (X * (E - E0))
 			- (XI * Math.pow(E - E0, 3.0))
