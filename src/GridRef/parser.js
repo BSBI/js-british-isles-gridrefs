@@ -1,7 +1,7 @@
-import {GridRef} from '../GridRef/GridRef';
-import {GridRefCI} from '../GridRef/GridRefCI';
-import {GridRefGB} from '../GridRef/GridRefGB';
-import {GridRefIE} from '../GridRef/GridRefIE';
+import {GridRef} from './GridRef';
+import {GridRefCI} from './GridRefCI';
+import {GridRefGB} from './GridRefGB';
+import {GridRefIE} from './GridRefIE';
 
 /**
  * returns a GridRef (GB, IE or CI-specific parser) or false
@@ -11,8 +11,8 @@ import {GridRefIE} from '../GridRef/GridRefIE';
  * @return {(GridRef|boolean)}
  */
 GridRef.from_string = function(rawGridRef) {
-	var parser;
-	var cleanRef = rawGridRef.replace(/\s+/g, '').toUpperCase();
+	let parser;
+	let cleanRef = rawGridRef.replace(/\s+/g, '').toUpperCase();
 
 	if (!cleanRef) {
 		return false;
@@ -23,7 +23,7 @@ GridRef.from_string = function(rawGridRef) {
 		// have simple well-formed grid ref
 
 		if (/^.\d/.test(cleanRef)) {
-			parser = new GridRef.GridRefIE();
+			parser = new GridRefIE();
 		} else {
 			if (cleanRef.charAt(0) === 'W') {
 				parser = new GridRefCI();

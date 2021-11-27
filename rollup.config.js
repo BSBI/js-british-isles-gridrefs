@@ -13,12 +13,14 @@ export default {
         sourcemap: true
     },
   plugins: [
-    resolve({
-		// pass custom options to the resolve plugin
-		customResolveOptions: {
-		  moduleDirectory: 'node_modules'
-		}
-	  }),
+    resolve(
+      //   {
+		// // pass custom options to the resolve plugin
+		// customResolveOptions: {
+		//   moduleDirectory: 'node_modules'
+		// }
+	  // }
+      ),
     babel({
       exclude: 'node_modules/**', // only transpile our source code
       babelHelpers: 'runtime'

@@ -69,9 +69,9 @@ GridRefGB.prototype.parse_well_formed = function(rawGridRef) {
  */
 GridRefGB.prototype.from_string = function(rawGridRef) {
 	// grid ref may not be in canonical format
-	var trimmedLocality = rawGridRef.replace(/[\[\]\s\t\.-]+/g, '').toUpperCase();
-	var tetradCode = '';
-	var ref;
+	let trimmedLocality = rawGridRef.replace(/[\[\]\s\t.-]+/g, '').toUpperCase();
+	let tetradCode = '';
+	let ref;
 
 	if (/[ABCDEFGHIJKLMNPQRSTUVWXYZ]$/.test(trimmedLocality)) {
 		// tetrad or quadrant
@@ -199,7 +199,7 @@ GridRefGB.prototype.from_string = function(rawGridRef) {
  * @param {string} gridRef either nn/nn... or aann...
  */
 GridRefGB.prototype.parse_gr_string_without_tetrads = function(gridRef) {
-	var matches, x, y, ref;
+	let matches, x, y, ref;
 
 	if ((matches = gridRef.match(/^(\d{2})\/((?:\d\d){1,5})$/)) !== null) {
 
@@ -248,8 +248,8 @@ GridRefGB.prototype.parse_gr_string_without_tetrads = function(gridRef) {
 			return;
 		}
 
-		var char1 = GridRef.letterMapping[gridRef.charAt(0)];
-		var char2 = GridRef.letterMapping[gridRef.charAt(1)];
+		let char1 = GridRef.letterMapping[gridRef.charAt(0)];
+		let char2 = GridRef.letterMapping[gridRef.charAt(1)];
 		ref = gridRef.substr(2);
 
 		x = ((char1 % 5) * 500000) + ((char2 % 5) * 100000) - 1000000;
@@ -298,7 +298,7 @@ GridRefGB.prototype.parse_gr_string_without_tetrads = function(gridRef) {
 			break;
 
 		default:
-			Logger('Bad grid ref length, ref=' + gridRef);
+			console.log('Bad grid ref length, ref=' + gridRef);
 			this.gridCoords = null;
 			this.length = 0;
 	}
@@ -315,7 +315,7 @@ GridRefGB.prototype.parse_gr_string_without_tetrads = function(gridRef) {
  * @throws Error
  */
 GridRefGB.prototype.parse_wellformed_gb_gr_string_no_tetrads = function(gridRef) {
-	var char1, char2, ref, x, y;
+	let char1, char2, ref, x, y;
 
 	// modern alphabetical sheet refs only
 	char1 = GridRef.letterMapping[gridRef.charAt(0)];

@@ -117,7 +117,7 @@ GridRef.prototype.set_tetrad = function() {
 /**
  *
  * @param {number} rawPrecision
- * @param {number} minPrecision
+ * @param {number} [minPrecision]
  * @returns {number}
  */
 GridRef.get_normalized_precision = function(rawPrecision, minPrecision) {
