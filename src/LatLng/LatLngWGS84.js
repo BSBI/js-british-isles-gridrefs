@@ -1,4 +1,3 @@
-
 /**
  * represents lat lng as WGS84 (google map form)
  *
@@ -6,7 +5,10 @@
  * @param {number} lng
  * @constructor
  */
-export const LatLngWGS84 = function(lat, lng) {
-  this.lat = lat;
-  this.lng = lng;
-};
+import {LatLng} from "./LatLng";
+
+export class LatLngWGS84 extends LatLng {
+  constructor(lat, lng) {
+    super(lat, lng);
+  }
+}

@@ -3,25 +3,28 @@ import { LatLngWGS84 } from './LatLngWGS84';
 // import { GridCoordsIE } from '../GridCoords/GridCoordsIE';
 import { deg2rad, rad2deg } from '../constants';
 
-//export const LatLngIE = /*@__PURE__*/(function() {
+
 /**
  * represents lat lng as Modified Airy (Irish grid projection)
  *
- * @param {number} lat
- * @param {number} lng
- * @constructor
  */
-export const LatLngIE = function(lat, lng) {
-  this.lat = lat;
-  this.lng = lng;
-};
+export class LatLngIE extends LatLng {
+
+	/**
+	 *
+	 * @param {number} lat
+	 * @param {number} lng
+	 */
+	constructor(lat, lng) {
+		super(lat, lng);
+	};
 
 // /**
 //  * converts lat and lon (modified Airy) to OSI northings and eastings
 //  *
 //  * @returns {GridCoordsIE}
 //  */
-// LatLngIE.prototype.to_os_coords = function() {
+// to_os_coords() {
 //     //var deg2rad = Math.PI / 180;
 //     //var rad2deg = 180.0 / Math.PI;
 //
@@ -73,70 +76,69 @@ export const LatLngIE = function(lat, lng) {
 //    return new GridCoordsIE(Math.round(east), Math.round(north));
 // };
 
-/**
- * convert Irish projection to WGS84 (for Google Maps)
- * see http://www.carabus.co.uk/ll_ngr.html
-*/
-LatLngIE.prototype.to_WGS84 = function() {
-	const IRISH_AXIS = 6377340.189;
-	const IRISH_ECCENTRIC = 0.00667054015;
-
-	const WGS84_AXIS = 6378137;
-	const WGS84_ECCENTRIC = 0.00669438037928458;
-
-	/* 
-	 * IE
-	a = 6377340.189;      // OSI semi-major
-	b = 6356034.447;      // OSI semi-minor
-	e0 = 200000;          // OSI easting of false origin
-	n0 = 250000;          // OSI northing of false origin
-	f0 = 1.000035;        // OSI scale factor on central meridian
-	e2 = 0.00667054015;   // OSI eccentricity squared
-	lam0 = -0.13962634015954636615389526147909;   // OSI false east
-	phi0 = 0.93375114981696632365417456114141;    // OSI false north
-	*/
-
-	//height = 0;
-	
-	const latLngRadians = LatLng._transform(this.lat * deg2rad, this.lng * deg2rad, IRISH_AXIS, IRISH_ECCENTRIC, 0, WGS84_AXIS, WGS84_ECCENTRIC, 
-		   482.53, -130.596, 564.557, -1.042, -0.214, -0.631, -8.15);
-		   
-	return new LatLngWGS84(latLngRadians.lat * rad2deg, latLngRadians.lng * rad2deg);
-};
-
-/**
- * 
- * @param {LatLngWGS84} latLngWGS84
- * @returns {LatLngIE}
- */
-LatLngIE.from_wgs84 = function (latLngWGS84) {
-	const phip = latLngWGS84.lat * deg2rad;
-	const lambdap = latLngWGS84.lng * deg2rad;
-	
-	const IRISH_AXIS = 6377340.189;
-	const IRISH_ECCENTRIC = 0.00667054015;
-	
-	const WGS84_AXIS = 6378137;
-	const WGS84_ECCENTRIC = 0.00669438037928458;
-
-		
-	/*
-	 * IE
-	a = 6377340.189;      // OSI semi-major
-    b = 6356034.447;      // OSI semi-minor
-    e0 = 200000;          // OSI easting of false origin
-    n0 = 250000;          // OSI northing of false origin
-    f0 = 1.000035;        // OSI scale factor on central meridian
-    e2 = 0.00667054015;   // OSI eccentricity squared
-    lam0 = -0.13962634015954636615389526147909;   // OSI false east
-    phi0 = 0.93375114981696632365417456114141;    // OSI false north
+	/**
+	 * convert Irish projection to WGS84 (for Google Maps)
+	 * see http://www.carabus.co.uk/ll_ngr.html
 	 */
-	
-	var height = 0;
-	var latlng =  LatLng._transform(phip, lambdap, WGS84_AXIS, WGS84_ECCENTRIC, height, IRISH_AXIS, IRISH_ECCENTRIC, 
-			   -482.53, 130.596, -564.557, 1.042, 0.214, 0.631, 8.15);
-	 
-	return new LatLngIE(latlng.lat * rad2deg, latlng.lng * rad2deg);
-};
-// return LatLngIE;
-// })();
+	to_WGS84() {
+		const IRISH_AXIS = 6377340.189;
+		const IRISH_ECCENTRIC = 0.00667054015;
+
+		const WGS84_AXIS = 6378137;
+		const WGS84_ECCENTRIC = 0.00669438037928458;
+
+		/*
+		 * IE
+		a = 6377340.189;      // OSI semi-major
+		b = 6356034.447;      // OSI semi-minor
+		e0 = 200000;          // OSI easting of false origin
+		n0 = 250000;          // OSI northing of false origin
+		f0 = 1.000035;        // OSI scale factor on central meridian
+		e2 = 0.00667054015;   // OSI eccentricity squared
+		lam0 = -0.13962634015954636615389526147909;   // OSI false east
+		phi0 = 0.93375114981696632365417456114141;    // OSI false north
+		*/
+
+		//height = 0;
+
+		const latLngRadians = LatLng._transform(this.lat * deg2rad, this.lng * deg2rad, IRISH_AXIS, IRISH_ECCENTRIC, 0, WGS84_AXIS, WGS84_ECCENTRIC,
+			482.53, -130.596, 564.557, -1.042, -0.214, -0.631, -8.15);
+
+		return new LatLngWGS84(latLngRadians.lat * rad2deg, latLngRadians.lng * rad2deg);
+	};
+
+	/**
+	 *
+	 * @param {LatLngWGS84} latLngWGS84
+	 * @returns {LatLngIE}
+	 */
+	static from_wgs84(latLngWGS84) {
+		const phip = latLngWGS84.lat * deg2rad;
+		const lambdap = latLngWGS84.lng * deg2rad;
+
+		const IRISH_AXIS = 6377340.189;
+		const IRISH_ECCENTRIC = 0.00667054015;
+
+		const WGS84_AXIS = 6378137;
+		const WGS84_ECCENTRIC = 0.00669438037928458;
+
+
+		/*
+		 * IE
+		a = 6377340.189;      // OSI semi-major
+		b = 6356034.447;      // OSI semi-minor
+		e0 = 200000;          // OSI easting of false origin
+		n0 = 250000;          // OSI northing of false origin
+		f0 = 1.000035;        // OSI scale factor on central meridian
+		e2 = 0.00667054015;   // OSI eccentricity squared
+		lam0 = -0.13962634015954636615389526147909;   // OSI false east
+		phi0 = 0.93375114981696632365417456114141;    // OSI false north
+		 */
+
+		const height = 0;
+		const latlng = LatLng._transform(phip, lambdap, WGS84_AXIS, WGS84_ECCENTRIC, height, IRISH_AXIS, IRISH_ECCENTRIC,
+			-482.53, 130.596, -564.557, 1.042, 0.214, 0.631, 8.15);
+
+		return new LatLngIE(latlng.lat * rad2deg, latlng.lng * rad2deg);
+	}
+}

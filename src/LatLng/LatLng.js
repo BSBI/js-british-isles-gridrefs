@@ -3,6 +3,16 @@ import { deg2rad } from '../constants';
 export class LatLng {
 
 	/**
+	 * @type {number}
+	 */
+	lat;
+
+	/**
+	 * @type {number}
+	 */
+	lng;
+
+	/**
 	 * represents lat lng
 	 *
 	 * @param {number} lat
