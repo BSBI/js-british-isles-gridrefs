@@ -23,6 +23,7 @@
     "url": "https://github.com/japonicus/js-british-isles-gridrefs/issues"
   },
   "main": "dist/gridrefutils.js",
+  "module": "dist/gridrefutils.esm.js",
   "scripts": {
     "build": "rollup -c"
   },

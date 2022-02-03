@@ -8,7 +8,7 @@ import {GridRefIE} from './GridRefIE';
  * crudely tries to determine the country by trying each country in turn
  *
  * @param {string} rawGridRef
- * @return {(GridRef|boolean)}
+ * @return {(GridRefCI|GridRefGB|GridRefIE|boolean)}
  */
 GridRef.from_string = function(rawGridRef) {
 	let parser;
@@ -62,4 +62,4 @@ GridRef.from_string = function(rawGridRef) {
 	return false;
 };
 
-export {GridRef};
+export {GridRef, GridRefCI, GridRefGB, GridRefIE};

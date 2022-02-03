@@ -81,7 +81,7 @@ export class GridCoordsCI extends GridCoords {
 	/**
 	 *
 	 * @param {number} precision metres
-	 * @returns {String}
+	 * @returns {?string}
 	 */
 	to_gridref(precision) {
 		if (this.y >= 5500000) {

@@ -6,29 +6,37 @@ import { terser } from 'rollup-plugin-terser';
 
 const production = !process.env.ROLLUP_WATCH;
 
-export default {
-    input: 'src/index.js',
-    output: {
-        file: 'dist/gridrefutils.js',
-        format: 'es', // 'cjs'
-        sourcemap: true
+export default [
+    {
+        input: 'src/index.js',
+        output: {
+            file: 'dist/gridrefutils.js',
+            format: 'es', // 'cjs'
+            sourcemap: true,
+            exports: "named",
+        },
+      plugins: [
+        resolve(),
+        babel({
+          exclude: 'node_modules/**', // only transpile our source code
+          babelHelpers: 'runtime'
+        }),
+        commonjs(), // converts npm packages to ES modules
+        production && terser() // minify, but only in production
+      ]
     },
-  plugins: [
-    resolve(
-      //   {
-		// // pass custom options to the resolve plugin
-		// customResolveOptions: {
-		//   moduleDirectory: 'node_modules'
-		// }
-	  // }
-      ),
-    babel({
-      exclude: 'node_modules/**', // only transpile our source code
-      babelHelpers: 'runtime'
-    }),
-    commonjs(), // converts npm packages to ES modules
-    production && terser() // minify, but only in production
-	//(process.env.NODE_ENV === 'production' && uglify())
-	//uglify()
-  ]
-};
+    {
+        input: 'src/index.js',
+        output: {
+            file: 'dist/gridrefutils.esm.js',
+            format: 'esm', // 'cjs'
+            sourcemap: true,
+            exports: "named",
+        },
+        plugins: [
+            resolve(),
+            commonjs(), // converts npm packages to ES modules
+            production && terser() // minify, but only in production
+        ]
+    },
+];

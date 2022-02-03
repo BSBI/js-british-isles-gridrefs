@@ -1,10 +1,8 @@
-//import {GridCoords as gridCoords} from '../GridCoords/GridCoords';
 import {LatLngCI as latLngCI} from '../LatLng/LatLngCI';
 import {GridCoordsCI as gridCoordsCI} from '../GridCoords/GridCoordsCI';
 import {deg2rad} from "../constants";
 import {LatLng} from "../LatLng/LatLng";
 
-//export const GridCoords = (function() {return gridCoords})();
 export const GridCoordsCI = (function() {return gridCoordsCI})();
 export const LatLngCI = (function() {
     /**

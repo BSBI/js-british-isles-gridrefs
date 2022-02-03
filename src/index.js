@@ -1,7 +1,4 @@
-export {GridRef} from './GridRef/parser';
-export {GridRefCI} from './GridRef/GridRefCI';
-export {GridRefGB} from './GridRef/GridRefGB';
-export {GridRefIE} from './GridRef/GridRefIE';
+export {GridRef, GridRefCI, GridRefGB, GridRefIE} from './GridRef/parser';
 export {GridCoords} from './GridCoords/GridCoords';
 export {LatLngWGS84} from './LatLng/LatLngWGS84';
 export {GridCoordsGB, LatLngGB} from './wrappers/GB';
