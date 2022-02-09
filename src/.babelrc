@@ -4,7 +4,7 @@
     "@babel/env",
     {
       "useBuiltIns" : "usage",
-      "corejs" : "3.19",
+      "corejs" : "3.21",
       "targets" : {
         "browsers" : "> 0.2%, last 2 versions, not dead"
       },

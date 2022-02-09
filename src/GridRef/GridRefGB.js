@@ -35,13 +35,13 @@ export class GridRefGB extends GridRef {
 		if (rawGridRef.length >= 5 && /^[A-Z]/.test(rawGridRef.charAt(4))) {
 			// tetrad or quadrant
 
-			if (GridRef.quadrantOffsets.hasOwnProperty(rawGridRef.substr(rawGridRef.length - 2))) {
-				this.quadrantCode = rawGridRef.substr(rawGridRef.length - 2);
+			if (GridRef.quadrantOffsets.hasOwnProperty(rawGridRef.substring(rawGridRef.length - 2))) {
+				this.quadrantCode = rawGridRef.substring(rawGridRef.length - 2);
 			} else {
 				this.tetradLetter = rawGridRef.charAt(4);
 			}
 
-			rawGridRef = rawGridRef.substr(0, 4);
+			rawGridRef = rawGridRef.substring(0, 4);
 		}
 
 		//this sets easting/northing, length and hectad
@@ -86,26 +86,26 @@ export class GridRefGB extends GridRef {
 		if (/[ABCDEFGHIJKLMNPQRSTUVWXYZ]$/.test(trimmedLocality)) {
 			// tetrad or quadrant
 
-			if (GridRef.quadrantOffsets.hasOwnProperty(trimmedLocality.substr(trimmedLocality.length - 2))) {
-				this.quadrantCode = trimmedLocality.substr(trimmedLocality.length - 2);
-				trimmedLocality = trimmedLocality.substr(0, trimmedLocality.length - 2);
+			if (GridRef.quadrantOffsets.hasOwnProperty(trimmedLocality.substring(trimmedLocality.length - 2))) {
+				this.quadrantCode = trimmedLocality.substring(trimmedLocality.length - 2);
+				trimmedLocality = trimmedLocality.substring(0, trimmedLocality.length - 2);
 			} else {
-				tetradCode = trimmedLocality.substr(trimmedLocality.length - 1);
-				trimmedLocality = trimmedLocality.substr(0, trimmedLocality.length - 1);
+				tetradCode = trimmedLocality.charAt(trimmedLocality.length - 1);
+				trimmedLocality = trimmedLocality.substring(0, trimmedLocality.length - 1);
 			}
 		}
 
 		// if all numeric gridref, e.g. 38517462 then
 		// split with '/', i.e. 38/517462
 		if (trimmedLocality === parseInt(trimmedLocality, 10).toString()) {
-			trimmedLocality = trimmedLocality.substr(0, 2) + '/' + trimmedLocality.substr(2);
-		} else if (trimmedLocality.length > 3 && trimmedLocality.charAt(2) === '/' && /^[A-Z]{2}$/.test(trimmedLocality.substr(0, 2))) {
+			trimmedLocality = trimmedLocality.substring(0, 2) + '/' + trimmedLocality.substring(2);
+		} else if (trimmedLocality.length > 3 && trimmedLocality.charAt(2) === '/' && /^[A-Z]{2}$/.test(trimmedLocality.substring(0, 2))) {
 			// preprocess refs of form SD/59 to SD59
 			// but at this stage want to retain old-style nn/nnnn gridrefs
 			trimmedLocality = trimmedLocality.replace('/', '');
 		}
 
-		if (trimmedLocality.substr(0, 2) === 'VC') {
+		if (trimmedLocality.substring(0, 2) === 'VC') {
 			// special case error, VC number entered in the wrong field
 			this.error = true;
 			this.errorMessage = "Misplaced vice-county code in grid-reference field. ('" + trimmedLocality + "')";
@@ -260,7 +260,7 @@ export class GridRefGB extends GridRef {
 
 			let char1 = GridRef.letterMapping[gridRef.charAt(0)];
 			let char2 = GridRef.letterMapping[gridRef.charAt(1)];
-			ref = gridRef.substr(2);
+			ref = gridRef.substring(2);
 
 			x = ((char1 % 5) * 500000) + ((char2 % 5) * 100000) - 1000000;
 			y = (-Math.floor(char1 / 5) * 500000) - (Math.floor(char2 / 5) * 100000) + 1900000;
@@ -330,7 +330,7 @@ export class GridRefGB extends GridRef {
 		// modern alphabetical sheet refs only
 		char1 = GridRef.letterMapping[gridRef.charAt(0)];
 		char2 = GridRef.letterMapping[gridRef.charAt(1)];
-		ref = gridRef.substr(2);
+		ref = gridRef.substring(2);
 
 		x = ((char1 % 5) * 500000) + ((char2 % 5) * 100000) - 1000000;
 		y = (-Math.floor(char1 / 5) * 500000) - (Math.floor(char2 / 5) * 100000) + 1900000;
@@ -351,7 +351,7 @@ export class GridRefGB extends GridRef {
 					y + ((ref % 100) * 1000)
 				);
 				this.length = 1000; //1 km square
-				this.hectad = gridRef.substr(0, 3) + gridRef.substr(4, 1);
+				this.hectad = gridRef.substring(0, 3) + gridRef.charAt(4);
 				break;
 
 			case 6:
@@ -360,7 +360,7 @@ export class GridRefGB extends GridRef {
 					y + (ref % 1000) * 100
 				);
 				this.length = 100; //100m square
-				this.hectad = gridRef.substr(0, 3) + gridRef.substr(5, 1);
+				this.hectad = gridRef.substring(0, 3) + gridRef.charAt(5);
 				break;
 
 			case 8:
@@ -369,7 +369,7 @@ export class GridRefGB extends GridRef {
 					y + (ref % 10000) * 10
 				);
 				this.length = 10; //10m square
-				this.hectad = gridRef.substr(0, 3) + gridRef.substr(6, 1);
+				this.hectad = gridRef.substring(0, 3) + gridRef.charAt(6);
 				break;
 
 			case 10:
@@ -378,7 +378,7 @@ export class GridRefGB extends GridRef {
 					y + (ref % 100000)
 				);
 				this.length = 1; //1m square
-				this.hectad = gridRef.substr(0, 3) + gridRef.substr(7, 1);
+				this.hectad = gridRef.substring(0, 3) + gridRef.charAt(7);
 				break;
 
 			default:

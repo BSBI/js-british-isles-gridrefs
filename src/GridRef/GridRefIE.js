@@ -61,12 +61,12 @@ export class GridRefIE extends GridRef {
     if (/[ABCDEFGHIJKLMNPQRSTUVWXYZ]$/.test(trimmedLocality)) {
       // tetrad or quadrant
 
-      if (GridRefIE.quadrantOffsets.hasOwnProperty(trimmedLocality.substr(trimmedLocality.length - 2))) {
-        this.quadrantCode = trimmedLocality.substr(trimmedLocality.length - 2);
-        trimmedLocality = trimmedLocality.substr(0, trimmedLocality.length - 2);
+      if (GridRefIE.quadrantOffsets.hasOwnProperty(trimmedLocality.substring(trimmedLocality.length - 2))) {
+        this.quadrantCode = trimmedLocality.substring(trimmedLocality.length - 2);
+        trimmedLocality = trimmedLocality.substring(0, trimmedLocality.length - 2);
       } else {
-        this.tetradLetter = trimmedLocality.substr(trimmedLocality.length - 1);
-        trimmedLocality = trimmedLocality.substr(0, trimmedLocality.length - 1);
+        this.tetradLetter = trimmedLocality.substring(trimmedLocality.length - 1);
+        trimmedLocality = trimmedLocality.substring(0, trimmedLocality.length - 1);
       }
     }
 
@@ -128,7 +128,7 @@ export class GridRefIE extends GridRef {
         return false;
       }
 
-      ref = gridRef.substr(3);
+      ref = gridRef.substring(3);
       char = GridRefIE._IE_GRID_LETTERS.charAt((x * 5) + y);
 
       x *= 100000;
@@ -163,7 +163,7 @@ export class GridRefIE extends GridRef {
         return false;
       }
 
-      ref = gridRef.substr(1);
+      ref = gridRef.substring(1);
     }
 
     switch (ref.length) {

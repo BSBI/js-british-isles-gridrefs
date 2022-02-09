@@ -41,12 +41,12 @@ export class GridRefCI extends GridRef {
 		if (/[ABCDEFGHIJKLMNPQRSTUVWXYZ]$/.test(trimmedLocality)) {
 			// tetrad or quadrant
 
-			if (GridRef.quadrantOffsets.hasOwnProperty(trimmedLocality.substr(trimmedLocality.length - 2))) {
-				this.quadrantCode = trimmedLocality.substr(trimmedLocality.length - 2);
-				trimmedLocality = trimmedLocality.substr(0, trimmedLocality.length - 2);
+			if (GridRef.quadrantOffsets.hasOwnProperty(trimmedLocality.substring(trimmedLocality.length - 2))) {
+				this.quadrantCode = trimmedLocality.substring(trimmedLocality.length - 2);
+				trimmedLocality = trimmedLocality.substring(0, trimmedLocality.length - 2);
 			} else {
-				tetradCode = trimmedLocality.substr(trimmedLocality.length - 1);
-				trimmedLocality = trimmedLocality.substr(0, trimmedLocality.length - 1);
+				tetradCode = trimmedLocality.charAt(trimmedLocality.length - 1);
+				trimmedLocality = trimmedLocality.substring(0, trimmedLocality.length - 1);
 			}
 		}
 
@@ -106,7 +106,7 @@ export class GridRefCI extends GridRef {
 		let northOffset, x, y, length;
 
 		// assume modern alphabetical sheet ref
-		let chars = gridRef.substr(0, 2);
+		let chars = gridRef.substring(0, 2);
 
 		if (chars === 'WA') {
 			northOffset = 5500000;
@@ -117,7 +117,7 @@ export class GridRefCI extends GridRef {
 			return false;
 		}
 
-		let ref = gridRef.substr(2);
+		let ref = gridRef.substring(2);
 		switch (ref.length) {
 			case 2:
 				x = ref.charAt(0) * 10000;
@@ -126,26 +126,26 @@ export class GridRefCI extends GridRef {
 				break;
 
 			case 4:
-				x = ref.substr(0, 2) * 1000;
-				y = ref.substr(2) * 1000;
+				x = ref.substring(0, 2) * 1000;
+				y = ref.substring(2) * 1000;
 				length = 1000; //1 km square
 				break;
 
 			case 6:
-				x = ref.substr(0, 3) * 100;
-				y = ref.substr(3) * 100;
+				x = ref.substring(0, 3) * 100;
+				y = ref.substring(3) * 100;
 				length = 100; //100m square
 				break;
 
 			case 8:
-				x = ref.substr(0, 4) * 10;
-				y = ref.substr(4) * 10;
+				x = ref.substring(0, 4) * 10;
+				y = ref.substring(4) * 10;
 				length = 10; //10m square
 				break;
 
 			case 10:
-				x = parseInt(ref.substr(0, 5), 10);
-				y = parseInt(ref.substr(5), 10);
+				x = parseInt(ref.substring(0, 5), 10);
+				y = parseInt(ref.substring(5), 10);
 				length = 1; //1m square
 				break;
 

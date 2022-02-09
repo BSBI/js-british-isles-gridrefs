@@ -118,9 +118,11 @@ export class GridRef {
    * hectad should have been set prior to call
    */
   set_tetrad() {
-    this.tetradLetter = GridRef.tetradLetters.substr(
-        ((Math.floor((this.gridCoords.x % 10000) / 1000) >> 1) * 5) + (Math.floor((this.gridCoords.y % 10000) / 1000) >> 1)
-        , 1);
+    // this.tetradLetter = GridRef.tetradLetters.substr(
+    //     ((Math.floor((this.gridCoords.x % 10000) / 1000) >> 1) * 5) + (Math.floor((this.gridCoords.y % 10000) / 1000) >> 1)
+    //     , 1);
+    this.tetradLetter = GridRef.tetradLetters.charAt(
+        ((Math.floor((this.gridCoords.x % 10000) / 1000) >> 1) * 5) + (Math.floor((this.gridCoords.y % 10000) / 1000) >> 1));
 
     if (!this.tetradLetter) {
       throw new Error("Failed to get tetrad letter when processing '" + this.preciseGridRef + "', easting=" + this.gridCoords.x + " northing=" + this.gridCoords.y);
