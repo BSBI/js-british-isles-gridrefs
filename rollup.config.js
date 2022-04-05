@@ -14,6 +14,7 @@ export default [
             format: 'es', // 'cjs'
             sourcemap: true,
             exports: "named",
+            name: 'gridrefutils',
         },
       plugins: [
         resolve(),
@@ -29,14 +30,16 @@ export default [
         input: 'src/index.js',
         output: {
             file: 'dist/gridrefutils.esm.js',
-            format: 'esm', // 'cjs'
+            format: 'esm',
             sourcemap: true,
             exports: "named",
+            name: 'gridrefutils',
         },
         plugins: [
             resolve(),
             commonjs(), // converts npm packages to ES modules
-            production && terser() // minify, but only in production
+            terser()
+            //production && terser() // minify, but only in production
         ]
-    },
+    }
 ];

@@ -1,5 +1,5 @@
 import {GridRef} from './GridRef';
-import {GridCoordsGB} from '../GridCoords/GridCoordsGB';
+import {GridCoordsGB} from '../GridCoords/GridCoords';
 
 export class GridRefGB extends GridRef {
 	/**
@@ -315,13 +315,13 @@ export class GridRefGB extends GridRef {
 	}
 
 	/**
-	 * gridRef must be a correctly formed OS GB gridref
+	 * gridRef must be a correctly formed OS GB grid-reference
 	 *
 	 * sets self::gridCoords
 	 * sets self::length
 	 * sets self::hectad
 	 *
-	 * @param {string} gridRef modern alpha-numeric format with no suffixes
+	 * @param {string} gridRef modern alphanumeric format with no suffixes
 	 * @throws Error
 	 */
 	parse_wellformed_gb_gr_string_no_tetrads(gridRef) {

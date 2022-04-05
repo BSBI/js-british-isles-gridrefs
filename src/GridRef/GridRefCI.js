@@ -1,5 +1,5 @@
 import {GridRef} from './GridRef';
-import {GridCoordsCI} from '../GridCoords/GridCoordsCI';
+import {GridCoordsCI} from '../GridCoords/GridCoords';
 
 export class GridRefCI extends GridRef {
 	/**
