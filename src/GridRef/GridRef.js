@@ -148,4 +148,52 @@ export class GridRef {
                   )
           );
   }
+
+  /**
+   * used for GB grid-refs and invoked as parent for the Channel Islands
+   *
+   * @param {?number} significantPrecision default null (precision in metres of centroid diameter)
+   *
+   * @return {string}
+   */
+  toHtml(significantPrecision = null) {
+    let formattedGr;
+
+    if (!significantPrecision || significantPrecision === this.length) {
+      if (this.length <= 1000) {
+        let halfNumLen = ((this.preciseGridRef.length - 2) / 2) | 0;
+        formattedGr = this.preciseGridRef.substring(0, 2) +
+            "<span class='sig'>" + this.preciseGridRef.substring(2, 2 + halfNumLen) +
+            "</span><span class='sig'>" + this.preciseGridRef.substring(2 + halfNumLen) + "</span>";
+      } else {
+        formattedGr = this.preciseGridRef;
+      }
+    } else {
+      if (this.length === 2000) {
+        // reduced precision means greying the tetrad code
+
+        formattedGr = `${this.hectad}<span class='nonsig'>${this.tetradLetter}</span>`;
+      } else if (this.length === 5000) {
+        // reduced precision means greying the quadrant code
+
+        formattedGr = `${this.hectad}<span class='nonsig'>${this.quadrantCode}</span>`;
+      } else {
+        if (significantPrecision > 5000) {
+          // large and probably spurious precision value - so grey-out the entire grid-reference
+          formattedGr = `<span class='nonsig'>${this.preciseGridRef}</span>`;
+        } else {
+          let columns = (5 + Math.log10(1 / significantPrecision)) | 0; // number of sig figures
+          let halfNumLen = ((this.preciseGridRef.length - 2) / 2) | 0;
+
+          formattedGr = this.preciseGridRef.substring(0, 2) + "<span class='sig'>" + this.preciseGridRef.substring(2, 2 + columns) + "</span>" +
+            "<span class='nonsig'>" + this.preciseGridRef.substring(columns + 2, 2 + halfNumLen) + "</span>" +
+            "<span class='sig'>" + this.preciseGridRef.substring(2 + halfNumLen, 2 + halfNumLen + columns) + "</span>" +
+            "<span class='nonsig'>" + this.preciseGridRef.substring(2 + halfNumLen + columns) + "</span>"
+          ;
+        }
+      }
+    }
+
+    return formattedGr;
+  }
 }

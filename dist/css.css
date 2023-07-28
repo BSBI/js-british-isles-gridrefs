@@ -1,0 +1,6 @@
+span.nonsig {
+    color: gray;
+}
+span.sig:before {
+    content: '\200A'; /* hair space */
+}

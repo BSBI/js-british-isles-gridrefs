@@ -220,4 +220,14 @@ export class GridRefIE extends GridRef {
     }
     return true;
   }
+  /**
+   * used for IE grid-refs
+   * @todo implement this properly
+   *
+   * @param {?number} significantPrecision default null (precision in metres of centroid diameter)
+   * @return {string}
+   */
+  toHtml(significantPrecision = null) {
+    return `<span>${this.preciseGridRef}</span>`;
+  }
 }

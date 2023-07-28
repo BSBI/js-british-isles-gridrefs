@@ -43,6 +43,14 @@ export class GridCoords {
 	}
 
 	/**
+	 *
+	 * @abstract
+	 * @returns {?string}
+	 */
+	to_hectad() {
+	}
+
+	/**
 	 * tetrad letters ordered by easting then northing (steps of 2000m)
 	 * i.e. (x*4) + y
 	 *
@@ -252,6 +260,12 @@ export class GridCoords {
 			'';
 	};
 
+	tetradLetter() {
+		return (this.x >= 0 && this.y >= 0) ?
+			GridCoords.tetradLetters.charAt((Math.floor(this.x % 10000 / 2000) * 5) + Math.floor(this.y % 10000 / 2000)) :
+			'';
+	}
+
 	toString() {
 		return this.x + ',' + this.y;
 	};
@@ -307,8 +321,8 @@ export class GridCoordsGB extends GridCoords {
 	 */
 	constructor(easting, northing) {
 		super();
-		this.x = easting;
-		this.y = northing;
+		this.x = easting | 0;
+		this.y = northing | 0;
 	};
 
 	/**
@@ -635,8 +649,8 @@ export class GridCoordsIE extends GridCoords {
 	 * @returns {String}
 	 */
 	to_gridref(precision) {
-		const hundredkmE = Math.floor(this.x / 100000),
-			hundredkmN = Math.floor(this.y / 100000);
+		const hundredkmE = (this.x / 100000) | 0,
+			hundredkmN = (this.y / 100000) | 0;
 		if (GridCoordsIE.irishGrid[hundredkmE] && GridCoordsIE.irishGrid[hundredkmE][hundredkmN]) {
 
 			return _e_n_to_gr(GridCoordsIE.irishGrid[hundredkmE][hundredkmN],
@@ -651,14 +665,16 @@ export class GridCoordsIE extends GridCoords {
 
 	/**
 	 *
-	 * @return {string} hectad
+	 * @return {?string} hectad
 	 */
 	to_hectad() {
-		const hundredkmE = Math.floor(this.x / 100000), hundredkmN = Math.floor(this.y / 100000);
+		const hundredkmE = (this.x / 100000) | 0,
+			hundredkmN = (this.y / 100000) | 0;
+
 		if (GridCoordsIE.irishGrid[hundredkmE] && GridCoordsIE.irishGrid[hundredkmE][hundredkmN]) {
 			return (GridCoordsIE.irishGrid[hundredkmE][hundredkmN]) + Math.floor((this.x % 100000) / 10000) + Math.floor((this.y % 100000) / 10000);
 		} else {
-			return '';
+			return null;
 		}
 	}
 }

@@ -22,13 +22,13 @@
   "bugs": {
     "url": "https://github.com/japonicus/js-british-isles-gridrefs/issues"
   },
-  "module": "dist/gridrefutils.esm.js",
+  "module": "dist/gridrefutils.mjs",
   "scripts": {
     "build": "rollup -c --strictDeprecations"
   },
   "devDependencies": {
-    "rollup": "^3.21.0",
-    "rollup-plugin-terser": "^7.0.2"
+    "rollup": "^3.26.0",
+    "@rollup/plugin-terser": "^0.4.3"
   },
   "dependencies": {
 

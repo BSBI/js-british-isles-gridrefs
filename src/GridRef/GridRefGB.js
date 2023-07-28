@@ -106,7 +106,7 @@ export class GridRefGB extends GridRef {
 		}
 
 		if (trimmedLocality.substring(0, 2) === 'VC') {
-			// special case error, VC number entered in the wrong field
+			// special case error, VC number entered into the wrong field
 			this.error = true;
 			this.errorMessage = "Misplaced vice-county code in grid-reference field. ('" + trimmedLocality + "')";
 			this.gridCoords = null;
