@@ -1,5 +1,5 @@
-import { LatLng} from './LatLng';
-import { rad2deg, deg2rad } from '../constants';
+import {LatLng} from './LatLng';
+import {rad2deg, deg2rad} from '../constants';
 
 export class LatLngCI extends LatLng {
 	/**

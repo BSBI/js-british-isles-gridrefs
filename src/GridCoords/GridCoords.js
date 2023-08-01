@@ -279,13 +279,13 @@ export class GridCoords {
  * @param {number} precision metres
  * @returns {String}
  */
-export const _e_n_to_gr = function(letters, e, n, precision) {
+export const _e_n_to_gr = function (letters, e, n, precision) {
 	let eString = ('00000' + Math.floor(e));
 	let nString = ('00000' + Math.floor(n));
 
 	if (precision === 2000) {
 		return letters +
-			eString.charAt(eString.length-5) + nString.charAt(nString.length-5) +
+			eString.charAt(eString.length - 5) + nString.charAt(nString.length - 5) +
 			GridCoords.calculate_tetrad(e, n);
 	} else if (precision === 100000) {
 		return letters;
@@ -298,9 +298,9 @@ export const _e_n_to_gr = function(letters, e, n, precision) {
 		let logPrecision = Math.round(Math.log10(precision));
 		return letters +
 			(logPrecision ?
-				(eString.slice(-5,  -logPrecision) + nString.slice(-5,  -logPrecision))
-				:
-				(eString.slice(-5) + nString.slice(-5))
+					(eString.slice(-5, -logPrecision) + nString.slice(-5, -logPrecision))
+					:
+					(eString.slice(-5) + nString.slice(-5))
 			);
 	}
 }
@@ -782,7 +782,7 @@ export class GridCoordsCI extends GridCoords {
 	}
 }
 
-const convert_to_wgs = function(phip, lambdap) {
+const convert_to_wgs = function (phip, lambdap) {
 	const WGS84_AXIS = 6378137;
 	const WGS84_ECCENTRIC = 0.00669438037928458;
 	//OSGB_AXIS = 6377563.396;
@@ -795,7 +795,7 @@ const convert_to_wgs = function(phip, lambdap) {
 	return LatLng._transform(phip, lambdap, INT24_AXIS, INT24_ECCENTRIC, height, WGS84_AXIS, WGS84_ECCENTRIC, -83.901, -98.127, -118.635, 0, 0, 0, 0);
 };
 
-const _initial_lat = function(north, n0, af0, phi0, n, bf0) {
+const _initial_lat = function (north, n0, af0, phi0, n, bf0) {
 	let phi1 = ((north - n0) / af0) + phi0;
 	let M = LatLng._Marc(bf0, n, phi0, phi1);
 	let phi2 = ((north - n0 - M) / af0) + phi1;

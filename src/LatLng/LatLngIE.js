@@ -1,7 +1,7 @@
-import { LatLng } from './LatLng';
-import { LatLngWGS84 } from './LatLngWGS84';
+import {LatLng} from './LatLng';
+import {LatLngWGS84} from './LatLngWGS84';
 // import { GridCoordsIE } from '../GridCoords/GridCoordsIE';
-import { deg2rad, rad2deg } from '../constants';
+import {deg2rad, rad2deg} from '../constants';
 
 
 /**

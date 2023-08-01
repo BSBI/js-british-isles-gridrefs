@@ -1,4 +1,4 @@
-import { deg2rad } from '../constants';
+import {deg2rad} from '../constants';
 
 export class LatLng {
 

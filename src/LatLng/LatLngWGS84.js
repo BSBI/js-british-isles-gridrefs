@@ -8,7 +8,7 @@
 import {LatLng} from "./LatLng";
 
 export class LatLngWGS84 extends LatLng {
-  constructor(lat, lng) {
-    super(lat, lng);
-  }
+	constructor(lat, lng) {
+		super(lat, lng);
+	}
 }

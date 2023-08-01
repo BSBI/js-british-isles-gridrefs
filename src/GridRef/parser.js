@@ -10,7 +10,7 @@ import {GridRefIE} from './GridRefIE';
  * @param {string} rawGridRef
  * @returns {(GridRefCI|GridRefGB|GridRefIE|false)}
  */
-GridRef.from_string = function(rawGridRef) {
+GridRef.from_string = function (rawGridRef) {
 	let parser;
 	let cleanRef = rawGridRef.replace(/\s+/g, '').toUpperCase();
 
