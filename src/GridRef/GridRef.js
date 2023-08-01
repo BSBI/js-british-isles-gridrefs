@@ -1,3 +1,13 @@
+/**
+ * tetrad letters ordered by easting then northing (steps of 2000 m)
+ * i.e. (x * 4) + y
+ *
+ * where x and y are integer of (10 km remainder / 2)
+ *
+ * @var string
+ */
+const TETRAD_LETTERS = 'ABCDEFGHIJKLMNPQRSTUVWXYZ';
+
 export class GridRef {
 
 	/**
@@ -194,5 +204,102 @@ export class GridRef {
 		}
 
 		return formattedGr;
+	}
+
+	/**
+	 * Interleaves xy co-ordinate pairs at each resolution
+	 * also includes hectad level precision as a separate 5 x 5 tier
+	 * DOES NOT SUPPORT QUADRANTS, which are stripped out.
+	 *
+	 * @param {string} gridRefString
+	 * @return {string}
+	 * @throws Error
+	 */
+	static interleave(gridRefString) {
+		let tetrad;
+
+		if (gridRefString.length > 3) {
+
+			if (gridRefString.includes('NENWSESW', gridRefString.length - 2)) {
+			//if (str_contains('NENWSESW', substr(gridRefString, -2))) {
+
+				gridRefString = gridRefString.substring(0, gridRefString.length - 2);
+				tetrad = '';
+
+			} else if (gridRefString.substring(gridRefString.length - 1).match(/a-z/i)) {
+			//} else if (ctype_alpha(substr(gridRefString, -1))) {
+
+				let o = TETRAD_LETTERS.indexOf(gridRefString.substring(gridRefString.length - 1))
+				//let o = strpos(TETRAD_LETTERS, substr(gridRefString, -1));
+
+				gridRefString = gridRefString.substring(0, gridRefString.length - 1);
+				tetrad = `${(o / 5)|0}${o % 5}`;
+			} else {
+				tetrad = '';
+			}
+		} else {
+			tetrad = '';
+		}
+
+		switch (gridRefString.length) {
+			case 0:
+				return '';
+
+			case 1:
+				return `_${gridRefString}`;
+
+			case 2:
+				return gridRefString;
+
+			case 3:
+				return `_${gridRefString}${tetrad}`;
+
+			case 4:
+				return `${gridRefString}${tetrad}`;
+
+			case 5:
+				return `_${gridRefString.substring(0, 2)}${gridRefString[3]}${gridRefString[2] >> 1}${gridRefString[4] >> 1}${gridRefString[2]}${gridRefString[4]}`;
+
+			case 6:
+				return `${gridRefString.substring(0, 3)}${gridRefString[4]}${gridRefString[3] >> 1}${gridRefString[5] >> 1}${gridRefString[3]}${gridRefString[5]}`;
+
+			case 7:
+				return `_${gridRefString.substring(0, 2)}${gridRefString[4]}${gridRefString[2] >> 1}${gridRefString[5] >> 1}${gridRefString[2]}${gridRefString[5]}${gridRefString[3]}${gridRefString[6]}`;
+
+			case 8:
+				return `${gridRefString.substring(0, 3)}${gridRefString[5]}${gridRefString[3] >> 1}${gridRefString[6] >> 1}${gridRefString[3]}${gridRefString[6]}${gridRefString[4]}${gridRefString[7]}`;
+
+			case 9:
+				return `_${gridRefString.substring(0, 2)}${gridRefString[5]}${gridRefString[2] >> 1}${gridRefString[6] >> 1}${gridRefString[2]}${gridRefString[6]}${gridRefString[3]}${gridRefString[7]}${gridRefString[4]}${gridRefString[8]}`;
+
+			case 10:
+				return `${gridRefString.substring(0, 3)}${gridRefString[6]}${gridRefString[3] >> 1}${gridRefString[7] >> 1}${gridRefString[3]}${gridRefString[7]}${gridRefString[4]}${gridRefString[8]}${gridRefString[5]}${gridRefString[9]}`;
+
+			case 11:
+				return `_${gridRefString.substring(0, 2)}${gridRefString[6]}${gridRefString[2] >> 1}${gridRefString[7] >> 1}${gridRefString[2]}${gridRefString[7]}${gridRefString[3]}${gridRefString[8]}${gridRefString[4]}${gridRefString[9]}${gridRefString[5]}${gridRefString[10]}`;
+
+			case 12:
+				return `${gridRefString.substring(0, 3)}${gridRefString[7]}${gridRefString[3] >> 1}${gridRefString[8] >> 1}${gridRefString[3]}${gridRefString[8]}${gridRefString[4]}${gridRefString[9]}${gridRefString[5]}${gridRefString[10]}${gridRefString[6]}${gridRefString[11]}`;
+
+			default:
+				throw new Error(`Bad grid-ref length '${gridRefString.length}' for interleaving.`);
+		}
+
+		// return match (strlen(gridRefString)) {
+		// 	    0 => '',
+		// 		1 => "_{gridRefString}",
+		// 		2 => gridRefString,
+		// 		3 => "_{gridRefString}{tetrad}",
+		// 		4 => "{gridRefString}{tetrad}",
+		// 		5 => "_" . substr(gridRefString, 0, 2) . gridRefString[3] . (gridRefString[2] >> 1) . (gridRefString[4] >> 1) . gridRefString[2] . gridRefString[4],
+		// 		6 => substr(gridRefString, 0, 3) . gridRefString[4] . (gridRefString[3] >> 1) . (gridRefString[5] >> 1) . gridRefString[3] . gridRefString[5],
+		// 		7 => '_' . substr(gridRefString, 0, 2) . gridRefString[4] . (gridRefString[2] >> 1) . (gridRefString[5] >> 1) . gridRefString[2] . gridRefString[5] . gridRefString[3] . gridRefString[6],
+		// 		8 => substr(gridRefString, 0, 3) . gridRefString[5] . (gridRefString[3] >> 1) . (gridRefString[6] >> 1) . gridRefString[3] . gridRefString[6] . gridRefString[4] . gridRefString[7],
+		// 		9 => '_' . substr(gridRefString, 0, 2) . gridRefString[5] . (gridRefString[2] >> 1) . (gridRefString[6] >> 1) . gridRefString[2] . gridRefString[6] . gridRefString[3] . gridRefString[7] . gridRefString[4] . gridRefString[8],
+		// 		10 => substr(gridRefString, 0, 3) . gridRefString[6] . (gridRefString[3] >> 1) . (gridRefString[7] >> 1) . gridRefString[3] . gridRefString[7] . gridRefString[4] . gridRefString[8] . gridRefString[5] . gridRefString[9],
+		// 		11 => '_' . substr(gridRefString, 0, 2) . gridRefString[6] . (gridRefString[2] >> 1) . (gridRefString[7] >> 1) . gridRefString[2] . gridRefString[7] . gridRefString[3] . gridRefString[8] . gridRefString[4] . gridRefString[9] . gridRefString[5] . gridRefString[10],
+		// 		12 => substr(gridRefString, 0, 3) . gridRefString[7] . (gridRefString[3] >> 1) . (gridRefString[8] >> 1) . gridRefString[3] . gridRefString[8] . gridRefString[4] . gridRefString[9] . gridRefString[5] . gridRefString[10] . gridRefString[6] . gridRefString[11],
+		// 	default => throw new Exception("Bad gridref length '" . strlen(gridRefString) . "' for interleaving."),
+		// };
 	}
 }
