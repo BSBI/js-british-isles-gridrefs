@@ -25,7 +25,7 @@ export class GridRefCI extends GridRef {
 	constructor() {
 		super();
 
-		this.parse_well_formed = this.from_string;
+		this.parse_well_formed = this.fromString;
 	};
 
 	/**
@@ -33,7 +33,7 @@ export class GridRefCI extends GridRef {
 	 * @param {string} rawGridRef
 	 * @throws Error
 	 */
-	from_string(rawGridRef) {
+	fromString(rawGridRef) {
 		let trimmedLocality = rawGridRef.replace(/[\[\]\s\t.\/-]+/g, '').toUpperCase();
 		let tetradCode = '';
 		let enl;

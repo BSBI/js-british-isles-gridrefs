@@ -7,7 +7,7 @@ export class GridRefIE extends GridRef {
 	 */
 	constructor() {
 		super();
-		this.parse_well_formed = this.from_string;
+		this.parse_well_formed = this.fromString;
 	};
 
 	/**
@@ -55,7 +55,7 @@ export class GridRefIE extends GridRef {
 	 * @param {string} rawGridRef
 	 * @throws Error
 	 */
-	from_string(rawGridRef) {
+	fromString(rawGridRef) {
 		let trimmedLocality = rawGridRef.replace(/[\[\]\s\t.-]+/g, '').toUpperCase();
 
 		if (/[ABCDEFGHIJKLMNPQRSTUVWXYZ]$/.test(trimmedLocality)) {
@@ -223,12 +223,48 @@ export class GridRefIE extends GridRef {
 
 	/**
 	 * used for IE grid-refs
-	 * @todo implement this properly
 	 *
 	 * @param {?number} significantPrecision default null (precision in metres of centroid diameter)
 	 * @return {string}
 	 */
 	toHtml(significantPrecision = null) {
-		return `<span>${this.preciseGridRef}</span>`;
+		let formattedGr;
+
+		if (!significantPrecision || significantPrecision === this.length) {
+			if (this.length <= 1000) {
+				let halfNumLen = ((this.preciseGridRef.length - 1) / 2) | 0
+				formattedGr = this.preciseGridRef[0] +
+					"<span class='sig'>" + this.preciseGridRef.substring(1, 1 + halfNumLen) +
+					"</span><span class='sig'>" + this.preciseGridRef.substring(1 + halfNumLen) + "</span>";
+			} else {
+				formattedGr = this.preciseGridRef;
+			}
+		} else {
+			if (this.length === 2000) {
+				// reduced precision means greying the tetrad code
+
+				formattedGr = `${this.hectad}<span class='nonsig'>${this.tetradLetter}</span>`;
+			} else if (this.length === 5000) {
+				// reduced precision means greying the quadrant code
+
+				formattedGr = `${this.hectad}<span class='nonsig'>${this.quadrantCode}</span>`;
+			} else {
+				if (significantPrecision > 5000) {
+					// large and probably spurious precision value - so grey-out the entire grid-reference
+					formattedGr = `<span class='nonsig'>${this.preciseGridRef}</span>`;
+				} else {
+					let columns = (5 + Math.log10(1 / significantPrecision)) | 0; // number of sig figures
+					let halfNumLen = ((this.preciseGridRef.length - 1) / 2) | 0;
+
+					formattedGr = this.preciseGridRef[0] + "<span class='sig'>" + this.preciseGridRef.substring(1, 1 + columns) + "</span>" +
+						"<span class='nonsig'>" + this.preciseGridRef.substring(columns + 1, 1 + halfNumLen) + "</span>" +
+						"<span class='sig'>" + this.preciseGridRef.substring(1 + halfNumLen, 1 + halfNumLen + columns) + "</span>" +
+						"<span class='nonsig'>" + this.preciseGridRef.substring(1 + halfNumLen + columns) + "</span>"
+					;
+				}
+			}
+		}
+
+		return formattedGr;
 	}
 }

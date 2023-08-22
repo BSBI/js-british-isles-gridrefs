@@ -10,7 +10,7 @@ import {GridRefIE} from './GridRefIE';
  * @param {string} rawGridRef
  * @returns {(GridRefCI|GridRefGB|GridRefIE|false)}
  */
-GridRef.from_string = function (rawGridRef) {
+GridRef.fromString = function (rawGridRef) {
 	let parser;
 	let cleanRef = rawGridRef.replace(/\s+/g, '').toUpperCase();
 
@@ -37,7 +37,7 @@ GridRef.from_string = function (rawGridRef) {
 		return (parser.length && !parser.error) ? parser : false;
 	} else {
 		parser = new GridRefGB();
-		parser.from_string(cleanRef);
+		parser.fromString(cleanRef);
 
 		if (parser.length && !parser.error) {
 			return parser;
@@ -45,14 +45,14 @@ GridRef.from_string = function (rawGridRef) {
 
 		if (cleanRef.charAt(0) === 'W') {
 			parser = new GridRefCI();
-			parser.from_string(cleanRef);
+			parser.fromString(cleanRef);
 
 			if (parser.length && !parser.error) {
 				return parser;
 			}
 		} else {
 			parser = new GridRefIE();
-			parser.from_string(cleanRef);
+			parser.fromString(cleanRef);
 
 			if (parser.length && !parser.error) {
 				return parser;

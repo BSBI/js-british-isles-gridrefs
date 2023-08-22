@@ -216,6 +216,10 @@ export class GridRef {
 	 * @throws Error
 	 */
 	static interleave(gridRefString) {
+		if (!gridRefString) {
+			return '';
+		}
+
 		let tetrad;
 
 		if (gridRefString.length > 3) {
