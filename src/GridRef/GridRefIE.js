@@ -56,7 +56,7 @@ export class GridRefIE extends GridRef {
 	 * @throws Error
 	 */
 	fromString(rawGridRef) {
-		let trimmedLocality = rawGridRef.replace(/[\[\]\s\t.-]+/g, '').toUpperCase();
+		let trimmedLocality = rawGridRef.replace(/[\[\]\s\t.-]+/gu, '').toUpperCase();
 
 		if (/[ABCDEFGHIJKLMNPQRSTUVWXYZ]$/.test(trimmedLocality)) {
 			// tetrad or quadrant

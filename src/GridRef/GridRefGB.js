@@ -79,7 +79,7 @@ export class GridRefGB extends GridRef {
 	 */
 	fromString(rawGridRef) {
 		// grid ref may not be in canonical format
-		let trimmedLocality = rawGridRef.replace(/[\[\]\s\t.-]+/g, '').toUpperCase();
+		let trimmedLocality = rawGridRef.replace(/[\[\]\s\t.-]+/gu, '').toUpperCase();
 		let tetradCode = '';
 		let ref;
 

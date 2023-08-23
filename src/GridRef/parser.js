@@ -12,7 +12,7 @@ import {GridRefIE} from './GridRefIE';
  */
 GridRef.fromString = function (rawGridRef) {
 	let parser;
-	let cleanRef = rawGridRef.replace(/\s+/g, '').toUpperCase();
+	let cleanRef = rawGridRef.replace(/\s+/gu, '').toUpperCase();
 
 	if (!cleanRef) {
 		return false;
