@@ -145,7 +145,7 @@ export class GridRef {
 	 * @param {number} [minPrecision]
 	 * @returns {number}
 	 */
-	static get_normalized_precision(rawPrecision, minPrecision) {
+	static getNormalizedPrecision(rawPrecision, minPrecision) {
 		return rawPrecision > 2000 ? 10000 :
 			(rawPrecision > 1000 ? 2000 :
 					(rawPrecision > 100 ? 1000 :
