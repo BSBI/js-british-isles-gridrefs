@@ -1,9 +1,7 @@
 import {LatLng} from './LatLng';
 import {LatLngWGS84} from './LatLngWGS84';
-//import { GridCoordsGB } from '../GridCoords/GridCoordsGB';
 import {deg2rad, rad2deg} from '../constants';
 
-// export const LatLngGB = /*@__PURE__*/(function() {
 /**
  * represents lat lng as OSGB1936 (Ordnance Survey projection)
  *

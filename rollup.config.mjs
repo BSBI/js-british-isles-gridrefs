@@ -36,9 +36,8 @@ export default [
             name: 'gridrefutils',
         },
         plugins: [
-            //resolve(),
-            //commonjs(), // converts npm packages to ES modules
-            terser({
+
+            production && false && terser({
                 module: true
             })
             //production && terser() // minify, but only in production

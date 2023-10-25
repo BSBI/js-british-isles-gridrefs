@@ -27,8 +27,8 @@
     "build": "rollup -c --strictDeprecations"
   },
   "devDependencies": {
-    "rollup": "^3.26.0",
-    "@rollup/plugin-terser": "^0.4.3"
+    "rollup": "^4.1.4",
+    "@rollup/plugin-terser": "^0.4.4"
   },
   "dependencies": {
 
