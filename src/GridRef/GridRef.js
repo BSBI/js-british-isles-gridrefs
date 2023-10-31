@@ -1,3 +1,5 @@
+import {GridCoords} from "../GridCoords/GridCoords";
+
 /**
  * tetrad letters ordered by easting then northing (steps of 2000 m)
  * i.e. (x * 4) + y
@@ -122,14 +124,75 @@ export class GridRef {
 	 */
 	errorMessage = '';
 
+	get centrePoint() {
+		const centre = new GridCoords();
+		const halfLength = Math.floor(this.length / 2);
+
+		centre.x = this.gridCoords.x + halfLength;
+		centre.y = this.gridCoords.y + halfLength;
+		return centre;
+	}
+
 	/**
-	 * update tetrad using Easting/Northing values (metres)
-	 * hectad should have been set prior to call
+	 *
+	 * @param {GridCoords} gridCoords centre-point to test
+	 * @param {number} radius default 0 for absolute point
+	 */
+	squareIntersectsPoint(gridCoords, radius = 1) {
+		const hX = gridCoords.x + this.length;
+		const hy = gridCoords.y + this.length;
+
+		if (radius === 1) {
+			return (this.gridCoords.x <= gridCoords.x && this.gridCoords.x + this.length > gridCoords.x
+				&& this.gridCoords.y <= gridCoords.y && this.gridCoords.y + this.length > gridCoords.y);
+		} else {
+			return GridRef._checkOverlap(
+				radius,
+				gridCoords.x, gridCoords.y,
+				this.gridCoords.x, this.gridCoords.y,
+				this.gridCoords.x + this.length, this.gridCoords.y + this.length
+				);
+		}
+	}
+
+	/**
+	 * check if any point overlaps the given circle and rectangle
+	 * see https://www.geeksforgeeks.org/check-if-any-point-overlaps-the-given-circle-and-rectangle/
+	 *
+	 * @param {number} R
+	 * @param {number} Xc
+	 * @param {number} Yc
+	 * @param {number} X1
+	 * @param {number} Y1
+	 * @param {number} X2
+	 * @param {number} Y2
+	 * @returns {boolean}
+	 */
+	static _checkOverlap(R, Xc, Yc, X1, Y1, X2, Y2) {
+
+		// Find the nearest point on the
+		// rectangle to the center of
+		// the circle
+		let Xn = Math.max(X1, Math.min(Xc, X2));
+		let Yn = Math.max(Y1, Math.min(Yc, Y2));
+
+		// Find the distance between the
+		// nearest point and the center
+		// of the circle
+		// Distance between 2 points,
+		// (x1, y1) & (x2, y2) in
+		// 2D Euclidean space is
+		// ((x1-x2)**2 + (y1-y2)**2)**0.5
+		let Dx = Xn - Xc;
+		let Dy = Yn - Yc;
+		return (Dx * Dx + Dy * Dy) <= R * R;
+	}
+
+	/**
+	 * Update tetrad using Easting/Northing values (metres)
+	 * Hectad should have been set prior to calling.
 	 */
 	set_tetrad() {
-		// this.tetradLetter = GridRef.tetradLetters.substr(
-		//     ((Math.floor((this.gridCoords.x % 10000) / 1000) >> 1) * 5) + (Math.floor((this.gridCoords.y % 10000) / 1000) >> 1)
-		//     , 1);
 		this.tetradLetter = GridRef.tetradLetters.charAt(
 			((Math.floor((this.gridCoords.x % 10000) / 1000) >> 1) * 5) + (Math.floor((this.gridCoords.y % 10000) / 1000) >> 1));
 
