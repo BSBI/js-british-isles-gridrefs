@@ -1,4 +1,4 @@
-import {GridRef} from './GridRef';
+import {GridRef, QUADRANT_OFFSETS, TETRAD_OFFSETS} from './GridRef';
 import {GridCoordsCI} from '../GridCoords/GridCoords';
 
 export class GridRefCI extends GridRef {
@@ -41,7 +41,7 @@ export class GridRefCI extends GridRef {
 		if (/[ABCDEFGHIJKLMNPQRSTUVWXYZ]$/.test(trimmedLocality)) {
 			// tetrad or quadrant
 
-			if (GridRef.quadrantOffsets.hasOwnProperty(trimmedLocality.substring(trimmedLocality.length - 2))) {
+			if (QUADRANT_OFFSETS.hasOwnProperty(trimmedLocality.substring(trimmedLocality.length - 2))) {
 				this.quadrantCode = trimmedLocality.substring(trimmedLocality.length - 2);
 				trimmedLocality = trimmedLocality.substring(0, trimmedLocality.length - 2);
 			} else {
@@ -63,8 +63,8 @@ export class GridRefCI extends GridRef {
 						this.tetrad = this.hectad + tetradCode;
 						this.tetradLetter = tetradCode;
 						this.length = 2000; // 2km square
-						this.gridCoords.x += GridRef.tetradOffsets[tetradCode][0];
-						this.gridCoords.y += GridRef.tetradOffsets[tetradCode][1];
+						this.gridCoords.x += TETRAD_OFFSETS[tetradCode][0];
+						this.gridCoords.y += TETRAD_OFFSETS[tetradCode][1];
 					} else {
 						// quadrant
 						this.preciseGridRef = trimmedLocality + this.quadrantCode;
@@ -72,8 +72,8 @@ export class GridRefCI extends GridRef {
 						this.tetrad = '';
 						this.quadrant = this.preciseGridRef;
 						this.length = 5000; // 5km square
-						this.gridCoords.x += GridRef.quadrantOffsets[this.quadrantCode][0];
-						this.gridCoords.y += GridRef.quadrantOffsets[this.quadrantCode][1];
+						this.gridCoords.x += QUADRANT_OFFSETS[this.quadrantCode][0];
+						this.gridCoords.y += QUADRANT_OFFSETS[this.quadrantCode][1];
 					}
 				} else {
 					this.preciseGridRef = trimmedLocality;

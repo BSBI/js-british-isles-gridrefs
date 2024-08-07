@@ -6,6 +6,15 @@ import {deg2rad, rad2deg} from "../constants";
 import {LatLng} from "../LatLng/LatLng";
 
 /**
+ * tetrad letters ordered by easting then northing (steps of 2000m)
+ * i.e. (x*4) + y
+ *
+ * where x and y are integer of (10km remainder / 2)
+ * @type {string}
+ */
+export const TETRAD_LETTERS = 'ABCDEFGHIJKLMNPQRSTUVWXYZ';
+
+/**
  * abstract representation of a grid-ref co-ordinate pair
  * ( *not a grid-ref string* )
  *
@@ -50,30 +59,21 @@ export class GridCoords {
 	to_hectad() {
 	}
 
-	/**
-	 * tetrad letters ordered by easting then northing (steps of 2000m)
-	 * i.e. (x*4) + y
-	 *
-	 * where x and y are integer of (10km remainder / 2)
-	 * @type {string}
-	 */
-	static tetradLetters = 'ABCDEFGHIJKLMNPQRSTUVWXYZ';
-
-	/**
-	 * tetrad letters ordered by northing then easting (steps of 2000m)
-	 * i.e. (y*5) + x
-	 *
-	 * where x and y are integer of (10km remainder / 2)
-	 *
-	 * @type {string}
-	 */
-	static tetradLettersRowFirst = 'AFKQVBGLRWCHMSXDINTYEJPUZ';
+	// /**
+	//  * tetrad letters ordered by northing then easting (steps of 2000m)
+	//  * i.e. (y*5) + x
+	//  *
+	//  * where x and y are integer of (10km remainder / 2)
+	//  *
+	//  * @type {string}
+	//  */
+	// static tetradLettersRowFirst = 'AFKQVBGLRWCHMSXDINTYEJPUZ';
 
 	/**
 	 *
 	 * @param {number} lat WGS84 degrees
 	 * @param {number} lng WGS84 degrees
-	 * @returns {GridCoords}
+	 * @returns {GridCoords|null}
 	 */
 	static from_latlng(lat, lng) {
 		// test if GB
@@ -256,13 +256,13 @@ export class GridCoords {
 	 */
 	static calculate_tetrad(easting, northing) {
 		return (easting >= 0 && northing >= 0) ?
-			GridCoords.tetradLetters.charAt((Math.floor(easting % 10000 / 2000) * 5) + Math.floor(northing % 10000 / 2000)) :
+			TETRAD_LETTERS.charAt((Math.floor(easting % 10000 / 2000) * 5) + Math.floor(northing % 10000 / 2000)) :
 			'';
 	};
 
 	tetradLetter() {
 		return (this.x >= 0 && this.y >= 0) ?
-			GridCoords.tetradLetters.charAt((Math.floor(this.x % 10000 / 2000) * 5) + Math.floor(this.y % 10000 / 2000)) :
+			TETRAD_LETTERS.charAt((Math.floor(this.x % 10000 / 2000) * 5) + Math.floor(this.y % 10000 / 2000)) :
 			'';
 	}
 

@@ -482,6 +482,15 @@ class LatLngCI extends LatLng {
 }
 
 /**
+ * tetrad letters ordered by easting then northing (steps of 2000m)
+ * i.e. (x*4) + y
+ *
+ * where x and y are integer of (10km remainder / 2)
+ * @type {string}
+ */
+const TETRAD_LETTERS = 'ABCDEFGHIJKLMNPQRSTUVWXYZ';
+
+/**
  * abstract representation of a grid-ref co-ordinate pair
  * ( *not a grid-ref string* )
  *
@@ -526,30 +535,21 @@ class GridCoords {
 	to_hectad() {
 	}
 
-	/**
-	 * tetrad letters ordered by easting then northing (steps of 2000m)
-	 * i.e. (x*4) + y
-	 *
-	 * where x and y are integer of (10km remainder / 2)
-	 * @type {string}
-	 */
-	static tetradLetters = 'ABCDEFGHIJKLMNPQRSTUVWXYZ';
-
-	/**
-	 * tetrad letters ordered by northing then easting (steps of 2000m)
-	 * i.e. (y*5) + x
-	 *
-	 * where x and y are integer of (10km remainder / 2)
-	 *
-	 * @type {string}
-	 */
-	static tetradLettersRowFirst = 'AFKQVBGLRWCHMSXDINTYEJPUZ';
+	// /**
+	//  * tetrad letters ordered by northing then easting (steps of 2000m)
+	//  * i.e. (y*5) + x
+	//  *
+	//  * where x and y are integer of (10km remainder / 2)
+	//  *
+	//  * @type {string}
+	//  */
+	// static tetradLettersRowFirst = 'AFKQVBGLRWCHMSXDINTYEJPUZ';
 
 	/**
 	 *
 	 * @param {number} lat WGS84 degrees
 	 * @param {number} lng WGS84 degrees
-	 * @returns {GridCoords}
+	 * @returns {GridCoords|null}
 	 */
 	static from_latlng(lat, lng) {
 		// test if GB
@@ -732,13 +732,13 @@ class GridCoords {
 	 */
 	static calculate_tetrad(easting, northing) {
 		return (easting >= 0 && northing >= 0) ?
-			GridCoords.tetradLetters.charAt((Math.floor(easting % 10000 / 2000) * 5) + Math.floor(northing % 10000 / 2000)) :
+			TETRAD_LETTERS.charAt((Math.floor(easting % 10000 / 2000) * 5) + Math.floor(northing % 10000 / 2000)) :
 			'';
 	};
 
 	tetradLetter() {
 		return (this.x >= 0 && this.y >= 0) ?
-			GridCoords.tetradLetters.charAt((Math.floor(this.x % 10000 / 2000) * 5) + Math.floor(this.y % 10000 / 2000)) :
+			TETRAD_LETTERS.charAt((Math.floor(this.x % 10000 / 2000) * 5) + Math.floor(this.y % 10000 / 2000)) :
 			'';
 	}
 
@@ -1287,61 +1287,76 @@ const _initial_lat = function (north, n0, af0, phi0, n, bf0) {
 };
 
 /**
- * tetrad letters ordered by easting then northing (steps of 2000 m)
- * i.e. (x * 4) + y
- *
- * where x and y are integer of (10 km remainder / 2)
- *
- * @var string
+ * x,y offsets (in metres) for tetrad letter codes
+ * @type {Object.<string,Array.<number>>}
  */
-const TETRAD_LETTERS = 'ABCDEFGHIJKLMNPQRSTUVWXYZ';
+
+ const TETRAD_OFFSETS = {
+	E: [0, 8000], J: [2000, 8000], P: [4000, 8000], U: [6000, 8000], Z: [8000, 8000],
+	D: [0, 6000], I: [2000, 6000], N: [4000, 6000], T: [6000, 6000], Y: [8000, 6000],
+	C: [0, 4000], H: [2000, 4000], M: [4000, 4000], S: [6000, 4000], X: [8000, 4000],
+	B: [0, 2000], G: [2000, 2000], L: [4000, 2000], R: [6000, 2000], W: [8000, 2000],
+	A: [0, 0], F: [2000, 0], K: [4000, 0], Q: [6000, 0], V: [8000, 0]
+};
+
+/**
+ * x,y offsets (in metres) for quadrant codes
+ * @type {{SE: number[], SW: number[], NE: number[], NW: number[]}}
+ */
+const QUADRANT_OFFSETS = {
+	NW: [0, 5000],
+	NE: [5000, 5000],
+	SW: [0, 0],
+	SE: [5000, 0]
+};
 
 class GridRef {
 
-	/**
-	 * x,y offsets (in metres) for tetrad letter codes
-	 * @type {Object.<string,Array.<number>>}
-	 */
-	static tetradOffsets = {
-		E: [0, 8000], J: [2000, 8000], P: [4000, 8000], U: [6000, 8000], Z: [8000, 8000],
-		D: [0, 6000], I: [2000, 6000], N: [4000, 6000], T: [6000, 6000], Y: [8000, 6000],
-		C: [0, 4000], H: [2000, 4000], M: [4000, 4000], S: [6000, 4000], X: [8000, 4000],
-		B: [0, 2000], G: [2000, 2000], L: [4000, 2000], R: [6000, 2000], W: [8000, 2000],
-		A: [0, 0], F: [2000, 0], K: [4000, 0], Q: [6000, 0], V: [8000, 0]
-	};
+	// /**
+	//  * x,y offsets (in metres) for tetrad letter codes
+	//  * @type {Object.<string,Array.<number>>}
+	//  */
+	// static tetradOffsets = {
+	// 	E: [0, 8000], J: [2000, 8000], P: [4000, 8000], U: [6000, 8000], Z: [8000, 8000],
+	// 	D: [0, 6000], I: [2000, 6000], N: [4000, 6000], T: [6000, 6000], Y: [8000, 6000],
+	// 	C: [0, 4000], H: [2000, 4000], M: [4000, 4000], S: [6000, 4000], X: [8000, 4000],
+	// 	B: [0, 2000], G: [2000, 2000], L: [4000, 2000], R: [6000, 2000], W: [8000, 2000],
+	// 	A: [0, 0], F: [2000, 0], K: [4000, 0], Q: [6000, 0], V: [8000, 0]
+	// };
 
-	/**
-	 * x,y offsets (in metres) for quadrant codes
-	 * @type {{SE: number[], SW: number[], NE: number[], NW: number[]}}
-	 */
-	static quadrantOffsets = {
-		NW: [0, 5000],
-		NE: [5000, 5000],
-		SW: [0, 0],
-		SE: [5000, 0]
-	};
+	// /**
+	//  * x,y offsets (in metres) for quadrant codes
+	//  * @type {{SE: number[], SW: number[], NE: number[], NW: number[]}}
+	//  */
+	// static quadrantOffsets = {
+	// 	NW: [0, 5000],
+	// 	NE: [5000, 5000],
+	// 	SW: [0, 0],
+	// 	SE: [5000, 0]
+	// };
 
-	/**
-	 * numerical mapping of letters to numbers
-	 * 'I' is omitted
-	 *
-	 * @type {{A: number, B: number, C: number, D: number, E: number, F: number, G: number, H: number, J: number, K: number, L: number, M: number, N: number, O: number, P: number, Q: number, R: number, S: number, T: number, U: number, V: number, W: number, X: number, Y: number, Z: number}}
-	 */
-	static letterMapping = {
-		A: 0, B: 1, C: 2, D: 3, E: 4, F: 5, G: 6, H: 7, J: 8, K: 9,
-		L: 10, M: 11, N: 12, O: 13, P: 14, Q: 15, R: 16, S: 17, T: 18,
-		U: 19, V: 20, W: 21, X: 22, Y: 23, Z: 24
-	};
+	// /**
+	//  * numerical mapping of letters to numbers
+	//  * 'I' is omitted
+	//  *
+	//  * @type {{A: number, B: number, C: number, D: number, E: number, F: number, G: number, H: number, J: number, K: number, L: number, M: number, N: number, O: number, P: number, Q: number, R: number, S: number, T: number, U: number, V: number, W: number, X: number, Y: number, Z: number}}
+	//  */
+	// static letterMapping = {
+	// 	A: 0, B: 1, C: 2, D: 3, E: 4, F: 5, G: 6, H: 7, J: 8, K: 9,
+	// 	L: 10, M: 11, N: 12, O: 13, P: 14, Q: 15, R: 16, S: 17, T: 18,
+	// 	U: 19, V: 20, W: 21, X: 22, Y: 23, Z: 24
+	// };
 
-	/**
-	 * tetrad letters ordered by easting then northing (steps of 2000m)
-	 * i.e. (x*4) + y
-	 *
-	 * where x and y are integer of (10km remainder / 2)
-	 *
-	 * @type {string}
-	 */
-	static tetradLetters = 'ABCDEFGHIJKLMNPQRSTUVWXYZ';
+
+	// /**
+	//  * tetrad letters ordered by easting then northing (steps of 2000m)
+	//  * i.e. (x*4) + y
+	//  *
+	//  * where x and y are integer of (10km remainder / 2)
+	//  *
+	//  * @type {string}
+	//  */
+	// static tetradLetters = 'ABCDEFGHIJKLMNPQRSTUVWXYZ';
 
 	/**
 	 *
@@ -1425,8 +1440,8 @@ class GridRef {
 	 * @param {number} radius default 0 for absolute point
 	 */
 	squareIntersectsPoint(gridCoords, radius = 1) {
-		gridCoords.x + this.length;
-		gridCoords.y + this.length;
+		// const hX = gridCoords.x + this.length;
+		// const hy = gridCoords.y + this.length;
 
 		if (radius === 1) {
 			return (this.gridCoords.x <= gridCoords.x && this.gridCoords.x + this.length > gridCoords.x
@@ -1479,7 +1494,7 @@ class GridRef {
 	 * Hectad should have been set prior to calling.
 	 */
 	set_tetrad() {
-		this.tetradLetter = GridRef.tetradLetters.charAt(
+		this.tetradLetter = TETRAD_LETTERS.charAt(
 			((Math.floor((this.gridCoords.x % 10000) / 1000) >> 1) * 5) + (Math.floor((this.gridCoords.y % 10000) / 1000) >> 1));
 
 		if (!this.tetradLetter) {
@@ -1697,7 +1712,7 @@ class GridRefCI extends GridRef {
 		if (/[ABCDEFGHIJKLMNPQRSTUVWXYZ]$/.test(trimmedLocality)) {
 			// tetrad or quadrant
 
-			if (GridRef.quadrantOffsets.hasOwnProperty(trimmedLocality.substring(trimmedLocality.length - 2))) {
+			if (QUADRANT_OFFSETS.hasOwnProperty(trimmedLocality.substring(trimmedLocality.length - 2))) {
 				this.quadrantCode = trimmedLocality.substring(trimmedLocality.length - 2);
 				trimmedLocality = trimmedLocality.substring(0, trimmedLocality.length - 2);
 			} else {
@@ -1719,8 +1734,8 @@ class GridRefCI extends GridRef {
 						this.tetrad = this.hectad + tetradCode;
 						this.tetradLetter = tetradCode;
 						this.length = 2000; // 2km square
-						this.gridCoords.x += GridRef.tetradOffsets[tetradCode][0];
-						this.gridCoords.y += GridRef.tetradOffsets[tetradCode][1];
+						this.gridCoords.x += TETRAD_OFFSETS[tetradCode][0];
+						this.gridCoords.y += TETRAD_OFFSETS[tetradCode][1];
 					} else {
 						// quadrant
 						this.preciseGridRef = trimmedLocality + this.quadrantCode;
@@ -1728,8 +1743,8 @@ class GridRefCI extends GridRef {
 						this.tetrad = '';
 						this.quadrant = this.preciseGridRef;
 						this.length = 5000; // 5km square
-						this.gridCoords.x += GridRef.quadrantOffsets[this.quadrantCode][0];
-						this.gridCoords.y += GridRef.quadrantOffsets[this.quadrantCode][1];
+						this.gridCoords.x += QUADRANT_OFFSETS[this.quadrantCode][0];
+						this.gridCoords.y += QUADRANT_OFFSETS[this.quadrantCode][1];
 					}
 				} else {
 					this.preciseGridRef = trimmedLocality;
@@ -1818,6 +1833,18 @@ class GridRefCI extends GridRef {
 	}
 }
 
+/**
+ * numerical mapping of letters to numbers
+ * 'I' is omitted
+ *
+ * @type {{A: number, B: number, C: number, D: number, E: number, F: number, G: number, H: number, J: number, K: number, L: number, M: number, N: number, O: number, P: number, Q: number, R: number, S: number, T: number, U: number, V: number, W: number, X: number, Y: number, Z: number}}
+ */
+const LETTER_MAPPING = {
+	A: 0, B: 1, C: 2, D: 3, E: 4, F: 5, G: 6, H: 7, J: 8, K: 9,
+	L: 10, M: 11, N: 12, O: 13, P: 14, Q: 15, R: 16, S: 17, T: 18,
+	U: 19, V: 20, W: 21, X: 22, Y: 23, Z: 24
+};
+
 class GridRefGB extends GridRef {
 	/**
 	 *
@@ -1852,7 +1879,7 @@ class GridRefGB extends GridRef {
 		if (rawGridRef.length >= 5 && /^[A-Z]/.test(rawGridRef.charAt(4))) {
 			// tetrad or quadrant
 
-			if (GridRef.quadrantOffsets.hasOwnProperty(rawGridRef.substring(rawGridRef.length - 2))) {
+			if (QUADRANT_OFFSETS.hasOwnProperty(rawGridRef.substring(rawGridRef.length - 2))) {
 				this.quadrantCode = rawGridRef.substring(rawGridRef.length - 2);
 			} else {
 				this.tetradLetter = rawGridRef.charAt(4);
@@ -1870,14 +1897,14 @@ class GridRefGB extends GridRef {
 			if (this.tetradLetter) {
 				this.preciseGridRef = this.tetrad = this.hectad + this.tetradLetter;
 				this.length = 2000; // 2km square
-				this.gridCoords.x += GridRef.tetradOffsets[this.tetradLetter][0];
-				this.gridCoords.y += GridRef.tetradOffsets[this.tetradLetter][1];
+				this.gridCoords.x += TETRAD_OFFSETS[this.tetradLetter][0];
+				this.gridCoords.y += TETRAD_OFFSETS[this.tetradLetter][1];
 			} else {
 				// quadrant
 				this.preciseGridRef = this.quadrant = rawGridRef + this.quadrantCode;
 				this.length = 5000; // 5km square
-				this.gridCoords.x += GridRef.quadrantOffsets[this.quadrantCode][0];
-				this.gridCoords.y += GridRef.quadrantOffsets[this.quadrantCode][1];
+				this.gridCoords.x += QUADRANT_OFFSETS[this.quadrantCode][0];
+				this.gridCoords.y += QUADRANT_OFFSETS[this.quadrantCode][1];
 			}
 		} else {
 			this.preciseGridRef = rawGridRef;
@@ -1903,7 +1930,7 @@ class GridRefGB extends GridRef {
 		if (/[ABCDEFGHIJKLMNPQRSTUVWXYZ]$/.test(trimmedLocality)) {
 			// tetrad or quadrant
 
-			if (GridRef.quadrantOffsets.hasOwnProperty(trimmedLocality.substring(trimmedLocality.length - 2))) {
+			if (QUADRANT_OFFSETS.hasOwnProperty(trimmedLocality.substring(trimmedLocality.length - 2))) {
 				this.quadrantCode = trimmedLocality.substring(trimmedLocality.length - 2);
 				trimmedLocality = trimmedLocality.substring(0, trimmedLocality.length - 2);
 			} else {
@@ -1942,8 +1969,8 @@ class GridRefGB extends GridRef {
 						this.tetradLetter = tetradCode;
 						this.tetrad = this.hectad + tetradCode;
 						this.length = 2000; // 2km square
-						this.gridCoords.x += GridRef.tetradOffsets[tetradCode][0];
-						this.gridCoords.y += GridRef.tetradOffsets[tetradCode][1];
+						this.gridCoords.x += TETRAD_OFFSETS[tetradCode][0];
+						this.gridCoords.y += TETRAD_OFFSETS[tetradCode][1];
 					} else {
 						// quadrant
 						this.preciseGridRef = trimmedLocality + this.quadrantCode;
@@ -1951,8 +1978,8 @@ class GridRefGB extends GridRef {
 						this.tetrad = '';
 						this.quadrant = this.preciseGridRef;
 						this.length = 5000; // 5km square
-						this.gridCoords.x += GridRef.quadrantOffsets[this.quadrantCode][0];
-						this.gridCoords.y += GridRef.quadrantOffsets[this.quadrantCode][1];
+						this.gridCoords.x += QUADRANT_OFFSETS[this.quadrantCode][0];
+						this.gridCoords.y += QUADRANT_OFFSETS[this.quadrantCode][1];
 					}
 				} else {
 					this.preciseGridRef = trimmedLocality;
@@ -1982,14 +2009,14 @@ class GridRefGB extends GridRef {
 						this.tetradLetter = tetradCode;
 						this.tetrad = this.hectad + tetradCode;
 						this.length = 2000; // 2km square
-						this.gridCoords.x += GridRef.tetradOffsets[tetradCode][0];
-						this.gridCoords.y += GridRef.tetradOffsets[tetradCode][1];
+						this.gridCoords.x += TETRAD_OFFSETS[tetradCode][0];
+						this.gridCoords.y += TETRAD_OFFSETS[tetradCode][1];
 					} else if (this.quadrantCode) {
 						trimmedLocality += this.quadrantCode;
 						this.quadrant = trimmedLocality;
 						this.length = 5000; // 5km square
-						this.gridCoords.x += GridRef.quadrantOffsets[this.quadrantCode][0];
-						this.gridCoords.y += GridRef.quadrantOffsets[this.quadrantCode][1];
+						this.gridCoords.x += QUADRANT_OFFSETS[this.quadrantCode][0];
+						this.gridCoords.y += QUADRANT_OFFSETS[this.quadrantCode][1];
 					}
 					break;
 
@@ -2068,15 +2095,15 @@ class GridRefGB extends GridRef {
 			ref = matches[2];
 		} else {
 			// modern alphabetical sheet ref
-			if (!GridRef.letterMapping.hasOwnProperty(gridRef.charAt(0)) || !GridRef.letterMapping.hasOwnProperty(gridRef.charAt(1))) {
+			if (!LETTER_MAPPING.hasOwnProperty(gridRef.charAt(0)) || !LETTER_MAPPING.hasOwnProperty(gridRef.charAt(1))) {
 				// invalid
 				this.length = 0;
 				this.gridCoords = null;
 				return;
 			}
 
-			let char1 = GridRef.letterMapping[gridRef.charAt(0)];
-			let char2 = GridRef.letterMapping[gridRef.charAt(1)];
+			let char1 = LETTER_MAPPING[gridRef.charAt(0)];
+			let char2 = LETTER_MAPPING[gridRef.charAt(1)];
 			ref = gridRef.substring(2);
 
 			x = ((char1 % 5) * 500000) + ((char2 % 5) * 100000) - 1000000;
@@ -2145,8 +2172,8 @@ class GridRefGB extends GridRef {
 		let char1, char2, ref, x, y;
 
 		// modern alphabetical sheet refs only
-		char1 = GridRef.letterMapping[gridRef.charAt(0)];
-		char2 = GridRef.letterMapping[gridRef.charAt(1)];
+		char1 = LETTER_MAPPING[gridRef.charAt(0)];
+		char2 = LETTER_MAPPING[gridRef.charAt(1)];
 		ref = gridRef.substring(2);
 
 		x = ((char1 % 5) * 500000) + ((char2 % 5) * 100000) - 1000000;
@@ -2265,7 +2292,7 @@ class GridRefIE extends GridRef {
 		if (/[ABCDEFGHIJKLMNPQRSTUVWXYZ]$/.test(trimmedLocality)) {
 			// tetrad or quadrant
 
-			if (GridRefIE.quadrantOffsets.hasOwnProperty(trimmedLocality.substring(trimmedLocality.length - 2))) {
+			if (QUADRANT_OFFSETS.hasOwnProperty(trimmedLocality.substring(trimmedLocality.length - 2))) {
 				this.quadrantCode = trimmedLocality.substring(trimmedLocality.length - 2);
 				trimmedLocality = trimmedLocality.substring(0, trimmedLocality.length - 2);
 			} else {
@@ -2284,15 +2311,15 @@ class GridRefIE extends GridRef {
 					this.preciseGridRef = this.hectad + this.tetradLetter;
 					this.tetrad = this.preciseGridRef;
 					this.length = 2000; // 2km square
-					this.gridCoords.x += GridRefIE.tetradOffsets[this.tetradLetter][0];
-					this.gridCoords.y += GridRefIE.tetradOffsets[this.tetradLetter][1];
+					this.gridCoords.x += TETRAD_OFFSETS[this.tetradLetter][0];
+					this.gridCoords.y += TETRAD_OFFSETS[this.tetradLetter][1];
 				} else {
 					// quadrant
 					this.preciseGridRef = this.hectad + this.quadrantCode;
 					this.quadrant = this.preciseGridRef;
 					this.length = 5000; // 5km square
-					this.gridCoords.x += GridRefIE.quadrantOffsets[this.quadrantCode][0];
-					this.gridCoords.y += GridRefIE.quadrantOffsets[this.quadrantCode][1];
+					this.gridCoords.x += QUADRANT_OFFSETS[this.quadrantCode][0];
+					this.gridCoords.y += QUADRANT_OFFSETS[this.quadrantCode][1];
 				}
 			} else {
 				this.preciseGridRef = trimmedLocality;
