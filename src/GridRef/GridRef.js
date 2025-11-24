@@ -171,7 +171,7 @@ export class GridRef {
 	}
 
 	/**
-	 * check if any point overlaps the given circle and rectangle
+	 * checks if any point overlaps the given circle and rectangle.
 	 * see https://www.geeksforgeeks.org/check-if-any-point-overlaps-the-given-circle-and-rectangle/
 	 *
 	 * @param {number} R
@@ -207,7 +207,7 @@ export class GridRef {
 	 * Update tetrad using Easting/Northing values (metres)
 	 * Hectad should have been set prior to calling.
 	 */
-	set_tetrad() {
+	setTetrad() {
 		this.tetradLetter = TETRAD_LETTERS.charAt(
 			((Math.floor((this.gridCoords.x % 10000) / 1000) >> 1) * 5) + (Math.floor((this.gridCoords.y % 10000) / 1000) >> 1));
 

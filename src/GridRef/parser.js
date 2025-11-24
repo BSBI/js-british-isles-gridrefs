@@ -8,9 +8,9 @@ import {GridRefIE} from './GridRefIE';
  * crudely tries to determine the country by trying each country in turn
  *
  * @param {string} rawGridRef
- * @returns {(GridRefCI|GridRefGB|GridRefIE|false)}
+ * @returns {(GridRef|false)}
  */
-GridRef.fromString = function (rawGridRef) {
+GridRef.fromString = (rawGridRef) => {
 	let parser;
 	let cleanRef = rawGridRef.replace(/\s+/gu, '').toUpperCase();
 
@@ -18,9 +18,9 @@ GridRef.fromString = function (rawGridRef) {
 		return false;
 	}
 
-	// if canonical ref form then be more efficient
+	// if we have a canonical ref form, then can be more efficient
 	if (/^(?:[BCDFGHJLMNOQRSTVWXY]|[HJNOST][ABCDEFGHJKLMNOPQRSTUVWXYZ]|W[VA])\d{2}(?:[A-Z]|[NS][EW]|(?:\d{2}){0,4})?$/.test(cleanRef)) {
-		// have simple well-formed grid ref
+		// have a simple, well-formed grid ref
 
 		if (/^.\d/.test(cleanRef)) {
 			parser = new GridRefIE();

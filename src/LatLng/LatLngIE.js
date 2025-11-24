@@ -80,7 +80,7 @@ export class LatLngIE extends LatLng {
 	 * convert Irish projection to WGS84 (for Google Maps)
 	 * see http://www.carabus.co.uk/ll_ngr.html
 	 */
-	to_WGS84() {
+	toWGS84() {
 		const IRISH_AXIS = 6377340.189;
 		const IRISH_ECCENTRIC = 0.00667054015;
 
@@ -112,7 +112,7 @@ export class LatLngIE extends LatLng {
 	 * @param {LatLngWGS84} latLngWGS84
 	 * @returns {LatLngIE}
 	 */
-	static from_wgs84(latLngWGS84) {
+	static fromWGS84(latLngWGS84) {
 		const phip = latLngWGS84.lat * deg2rad;
 		const lambdap = latLngWGS84.lng * deg2rad;
 

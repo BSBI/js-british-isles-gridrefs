@@ -1,5 +1,5 @@
 /**
- * represents lat lng as WGS84 (google map form)
+ * represents lat lng as WGS84 (the Google Maps form)
  *
  * @param {number} lat
  * @param {number} lng

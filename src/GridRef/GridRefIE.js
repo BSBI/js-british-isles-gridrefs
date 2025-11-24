@@ -10,22 +10,24 @@ export class GridRefIE extends GridRef {
 		this.parse_well_formed = this.fromString;
 	};
 
+    // noinspection JSUnusedGlobalSymbols
 	/**
 	 *
 	 * @type {string}
 	 */
 	country = 'IE';
 
+    // noinspection JSUnusedGlobalSymbols
 	/**
 	 *
 	 * @type {typeof GridCoordsIE}
 	 */
 	GridCoords = GridCoordsIE;
 
-	/**
-	 * @type {GridCoordsIE}
-	 */
-	gridCoords = null;
+	// /**
+	//  * @type {GridCoordsIE}
+	//  */
+	// gridCoords = null;
 
 	static gridLetter = {
 		A: [0, 4],
@@ -95,7 +97,7 @@ export class GridRefIE extends GridRef {
 
 				if (this.length <= 1000) {
 					// calculate tetrad for precise gridref
-					this.set_tetrad();
+					this.setTetrad();
 				}
 			}
 		} else {

@@ -56,7 +56,7 @@ export class LatLng {
 	}
 
 	//helper
-	static _Marc(bf0, n, phi0, phi) {
+	static _marc(bf0, n, phi0, phi) {
 		return bf0 * (((1 + n + ((5 / 4) * (n * n)) + ((5 / 4) * (n * n * n))) * (phi - phi0))
 			- (((3 * n) + (3 * (n * n)) + ((21 / 8) * (n * n * n))) * (Math.sin(phi - phi0)) * (Math.cos(phi + phi0)))
 			+ ((((15 / 8) * (n * n)) + ((15 / 8) * (n * n * n))) * (Math.sin(2 * (phi - phi0))) * (Math.cos(2 * (phi + phi0))))

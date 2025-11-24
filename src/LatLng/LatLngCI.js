@@ -65,7 +65,7 @@ export class LatLngCI extends LatLng {
 	 * @param {LatLngWGS84} latLngWGS84
 	 * @returns {LatLngCI}
 	 */
-	static from_wgs84(latLngWGS84) {
+	static fromWGS84(latLngWGS84) {
 		const phip = latLngWGS84.lat * deg2rad;
 		const lambdap = latLngWGS84.lng * deg2rad;
 

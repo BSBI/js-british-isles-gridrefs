@@ -20,7 +20,7 @@ export class LatLngGB extends LatLng {
 	 *
 	 * @returns {LatLngWGS84}
 	 */
-	to_WGS84() {
+	toWGS84() {
 		//airy1830 = new RefEll(6377563.396, 6356256.909);
 		let a = 6377563.396; //airy1830.maj;
 		//var b        = 6356256.909; //airy1830.min;
@@ -117,7 +117,7 @@ export class LatLngGB extends LatLng {
 	 * @param {LatLngWGS84} latLngWGS84
 	 * @returns {LatLngGB}
 	 */
-	static from_wgs84(latLngWGS84) {
+	static fromWGS84(latLngWGS84) {
 
 		//first off convert to radians
 		const radWGlat = latLngWGS84.lat * deg2rad;

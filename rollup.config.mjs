@@ -37,8 +37,9 @@ export default [
         },
         plugins: [
 
-            production && false && terser({
-                module: true
+            terser({
+                module: true,
+                ecma: 2020,
             })
             //production && terser() // minify, but only in production
         ]

@@ -14,22 +14,24 @@ const LETTER_MAPPING = {
 };
 
 export class GridRefGB extends GridRef {
+    // noinspection JSUnusedGlobalSymbols
 	/**
 	 *
 	 * @type {string}
 	 */
 	country = 'GB';
 
+    // noinspection JSUnusedGlobalSymbols
 	/**
 	 *
 	 * @type {typeof GridCoordsGB}
 	 */
 	GridCoords = GridCoordsGB;
 
-	/**
-	 * @type {GridCoordsGB}
-	 */
-	gridCoords = null;
+	// /**
+	//  * @type {GridCoordsGB}
+	//  */
+	// gridCoords = null;
 
 	constructor() {
 		super();
@@ -79,7 +81,7 @@ export class GridRefGB extends GridRef {
 
 			if (this.length <= 1000) {
 				// calculate tetrad for precise gridref
-				this.set_tetrad();
+				this.setTetrad();
 			}
 		}
 	}
@@ -154,7 +156,7 @@ export class GridRefGB extends GridRef {
 
 					if (this.length <= 1000) {
 						// calculate tetrad for precise gridref
-						this.set_tetrad();
+						this.setTetrad();
 					}
 				}
 			} else {
@@ -169,7 +171,7 @@ export class GridRefGB extends GridRef {
 
 			switch (this.length) {
 				case 10000:
-					trimmedLocality = this.gridCoords.to_gridref(10000);
+					trimmedLocality = this.gridCoords.toGridRefString(10000);
 					this.hectad = trimmedLocality;
 
 					if (tetradCode) {
@@ -192,9 +194,9 @@ export class GridRefGB extends GridRef {
 				case 100:
 				case 10:
 				case 1:
-					trimmedLocality = this.gridCoords.to_gridref(this.length);
-					this.hectad = this.gridCoords.to_gridref(10000);
-					this.set_tetrad();
+					trimmedLocality = this.gridCoords.toGridRefString(this.length);
+					this.hectad = this.gridCoords.toGridRefString(10000);
+					this.setTetrad();
 					break;
 
 				default:

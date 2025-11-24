@@ -2,22 +2,24 @@ import {GridRef, QUADRANT_OFFSETS, TETRAD_OFFSETS} from './GridRef';
 import {GridCoordsCI} from '../GridCoords/GridCoords';
 
 export class GridRefCI extends GridRef {
+    // noinspection JSUnusedGlobalSymbols
 	/**
 	 *
 	 * @type {string}
 	 */
 	country = 'CI';
 
-	/**
+	// noinspection JSUnusedGlobalSymbols
+    /**
 	 *
 	 * @type {typeof GridCoordsCI}
 	 */
 	GridCoords = GridCoordsCI;
 
-	/**
-	 * @type {GridCoordsCI}
-	 */
-	gridCoords = null;
+	// /**
+	//  * @type {GridCoordsCI}
+	//  */
+	// gridCoords = null;
 
 	/**
 	 * @constructor
@@ -55,7 +57,7 @@ export class GridRefCI extends GridRef {
 				this.length = enl.length;
 
 				this.gridCoords = new GridCoordsCI(enl.e, enl.n);
-				this.hectad = this.gridCoords.to_gridref(10000);
+				this.hectad = this.gridCoords.toGridRefString(10000);
 
 				if (this.length === 10000 && (tetradCode || this.quadrantCode)) {
 					if (tetradCode) {
@@ -80,7 +82,7 @@ export class GridRefCI extends GridRef {
 
 					if (this.length <= 1000) {
 						// calculate tetrad for precise gridref
-						this.set_tetrad();
+						this.setTetrad();
 					}
 				}
 			} else {

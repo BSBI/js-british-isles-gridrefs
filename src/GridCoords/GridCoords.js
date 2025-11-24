@@ -6,10 +6,10 @@ import {deg2rad, rad2deg} from "../constants";
 import {LatLng} from "../LatLng/LatLng";
 
 /**
- * tetrad letters ordered by easting then northing (steps of 2000m)
- * i.e. (x*4) + y
+ * tetrad letters ordered by easting then northing (steps of 2000 m)
+ * i.e. (x * 4) + y
  *
- * where x and y are integer of (10km remainder / 2)
+ * where x and y are the integer of (10 km remainder / 2)
  * @type {string}
  */
 export const TETRAD_LETTERS = 'ABCDEFGHIJKLMNPQRSTUVWXYZ';
@@ -31,6 +31,11 @@ export class GridCoords {
 	 */
 	y;
 
+	/**
+	 * @type {('GB'|'IE'|'CI')}
+	 */
+	country;
+
 	constructor() {
 	}
 
@@ -39,7 +44,7 @@ export class GridCoords {
 	 * @abstract
 	 * @returns {LatLngWGS84}
 	 */
-	to_latLng() {
+	toLatLng() {
 	}
 
 	/**
@@ -48,7 +53,25 @@ export class GridCoords {
 	 * @abstract
 	 * @returns {string}
 	 */
-	to_gridref(precision) {
+	toGridRefString(precision) {
+	}
+
+	/**
+	 *
+	 * @param {number} precision metres
+	 * @returns {{gridRef: string, lx: number, ly: number, hx: number, hy: number}}
+	 */
+	toGridRefStringDescriptor(precision) {
+		const lx = Math.trunc(this.x / precision) * precision;
+		const ly = Math.trunc(this.y / precision) * precision;
+
+		return {
+			gridRef : this.toGridRefString(precision),
+			lx,
+			ly,
+			hx: lx + precision,
+			hy: ly + precision,
+		};
 	}
 
 	/**
@@ -56,14 +79,31 @@ export class GridCoords {
 	 * @abstract
 	 * @returns {?string}
 	 */
-	to_hectad() {
+	toHectad() {
+	}
+
+	/**
+	 *
+	 * @returns {{gridRef: string, lx: number, ly: number, hx: number, hy: number}}
+	 */
+	toHectadDescriptor() {
+		const lx = Math.trunc(this.x / 10000) * 10000;
+		const ly = Math.trunc(this.y / 10000) * 10000;
+
+		return {
+			gridRef : this.toGridRefString(precision),
+			lx,
+			ly,
+			hx: lx + 10000,
+			hy: ly + 10000,
+		};
 	}
 
 	// /**
-	//  * tetrad letters ordered by northing then easting (steps of 2000m)
+	//  * tetrad letters ordered by northing then easting (steps of 2000 m)
 	//  * i.e. (y*5) + x
 	//  *
-	//  * where x and y are integer of (10km remainder / 2)
+	//  * where x and y are the integer of (10 km remainder / 2)
 	//  *
 	//  * @type {string}
 	//  */
@@ -75,13 +115,13 @@ export class GridCoords {
 	 * @param {number} lng WGS84 degrees
 	 * @returns {GridCoords|null}
 	 */
-	static from_latlng(lat, lng) {
+	static fromLatLng(lat, lng) {
 		// test if GB
 		if (lng >= -8.74 && lat > 49.88) {
 			// lng extreme must accommodate St Kilda
 
-			//let os = LatLngGB.from_wgs84(new LatLngWGS84(lat, lng)).to_os_coords();
-			const os = GridCoords._from_gb_latlng(LatLngGB.from_wgs84(new LatLngWGS84(lat, lng)));
+			//let os = LatLngGB.fromWGS84(new LatLngWGS84(lat, lng)).to_os_coords();
+			const os = GridCoords._from_gb_latlng(LatLngGB.fromWGS84(new LatLngWGS84(lat, lng)));
 			if (os.x >= 0 && os.is_gb_hectad()) {
 				return os;
 			}
@@ -89,8 +129,8 @@ export class GridCoords {
 
 		// test if Irish
 		if (lng < -5.3 && lat > 51.34 && lng > -11 && lat < 55.73) {
-			//let osI = LatLngIE.from_wgs84(new LatLngWGS84(lat, lng)).to_os_coords();
-			const osI = GridCoords._from_ie_latlng(LatLngIE.from_wgs84(new LatLngWGS84(lat, lng)));
+			//let osI = LatLngIE.fromWGS84(new LatLngWGS84(lat, lng)).to_os_coords();
+			const osI = GridCoords._from_ie_latlng(LatLngIE.fromWGS84(new LatLngWGS84(lat, lng)));
 
 			if (osI.x < 0 || osI.y < 0) {
 				return null;
@@ -98,8 +138,8 @@ export class GridCoords {
 				return osI;
 			}
 		} else {
-			//let osCi = LatLngCI.from_wgs84(new LatLngWGS84(lat, lng)).to_os_coords();
-			const osCi = GridCoords._from_ci_latlng(LatLngCI.from_wgs84(new LatLngWGS84(lat, lng)));
+			//let osCi = LatLngCI.fromWGS84(new LatLngWGS84(lat, lng)).to_os_coords();
+			const osCi = GridCoords._from_ci_latlng(LatLngCI.fromWGS84(new LatLngWGS84(lat, lng)));
 
 			if (osCi.x >= 500000 && osCi.x < 600000 && osCi.y >= 5400000 && osCi.y < 5600000) {
 				return osCi;
@@ -107,6 +147,23 @@ export class GridCoords {
 		}
 
 		return null; //not a valid location
+	}
+
+	// noinspection JSUnusedGlobalSymbols
+	/**
+	 *
+	 * @param {GridCoords} otherGridCoords
+	 * @returns {null|number}
+	 */
+	distanceFrom(otherGridCoords) {
+		if (this.country !== otherGridCoords.country) {
+			return null;
+		}
+
+		const dX = otherGridCoords.x - this.x;
+		const dY = otherGridCoords.y - this.y;
+
+		return Math.sqrt((dX * dX) + (dY * dY));
 	}
 
 	/**
@@ -144,7 +201,7 @@ export class GridCoords {
 
 		// northing
 		const n = (af0 - bf0) / (af0 + bf0);
-		const M = LatLng._Marc(bf0, n, phi0, phi);
+		const M = LatLng._marc(bf0, n, phi0, phi);
 		const I = M + (n0);
 		const II = (nu / 2) * Math.sin(phi) * Math.cos(phi);
 		const III = ((nu / 24) * Math.sin(phi) * Math.pow(Math.cos(phi), 3)) * (5 - Math.pow(Math.tan(phi), 2) + (9 * eta2));
@@ -191,7 +248,7 @@ export class GridCoords {
 
 		// northing
 		const n = (af0 - bf0) / (af0 + bf0);
-		const M = LatLng._Marc(bf0, n, phi0, phi);
+		const M = LatLng._marc(bf0, n, phi0, phi);
 		const I = M + (n0);
 		const II = (nu / 2) * Math.sin(phi) * Math.cos(phi);
 		const III = ((nu / 24) * Math.sin(phi) * Math.pow(Math.cos(phi), 3)) * (5 - Math.pow(Math.tan(phi), 2) + (9 * eta2));
@@ -238,7 +295,7 @@ export class GridCoords {
 
 		// northing
 		const n = (af0 - bf0) / (af0 + bf0);
-		const M = LatLng._Marc(bf0, n, phi0, phi);
+		const M = LatLng._marc(bf0, n, phi0, phi);
 		const I = M + (n0);
 		const II = (nu / 2) * Math.sin(phi) * Math.cos(phi);
 		const III = ((nu / 24) * Math.sin(phi) * Math.pow(Math.cos(phi), 3)) * (5 - Math.pow(Math.tan(phi), 2) + (9 * eta2));
@@ -254,7 +311,7 @@ export class GridCoords {
 	 * @param {number} northing
 	 * @return {string} tetrad letter
 	 */
-	static calculate_tetrad(easting, northing) {
+	static calculateTetrad(easting, northing) {
 		return (easting >= 0 && northing >= 0) ?
 			TETRAD_LETTERS.charAt((Math.floor(easting % 10000 / 2000) * 5) + Math.floor(northing % 10000 / 2000)) :
 			'';
@@ -286,7 +343,7 @@ export const _e_n_to_gr = function (letters, e, n, precision) {
 	if (precision === 2000) {
 		return letters +
 			eString.charAt(eString.length - 5) + nString.charAt(nString.length - 5) +
-			GridCoords.calculate_tetrad(e, n);
+			GridCoords.calculateTetrad(e, n);
 	} else if (precision === 100000) {
 		return letters;
 	} else {
@@ -342,7 +399,7 @@ export class GridCoordsGB extends GridCoords {
 	 * @param {number} precision metres
 	 * @returns {string}
 	 */
-	to_gridref(precision) {
+	toGridRefString(precision) {
 		const hundredkmE = this.x / 100000 | 0; // Math.floor(this.x / 100000);
 		const hundredkmN = this.y / 100000 | 0; // Math.floor(this.y / 100000);
 		let firstLetter;
@@ -375,7 +432,7 @@ export class GridCoordsGB extends GridCoords {
 	 *
 	 * @return {string} hectad
 	 */
-	to_hectad() {
+	toHectad() {
 		const hundredkmE = this.x / 100000 | 0; // Math.floor(easting / 100000);
 		const hundredkmN = this.y / 100000 | 0; // Math.floor(northing / 100000);
 		let firstLetter;
@@ -404,7 +461,7 @@ export class GridCoordsGB extends GridCoords {
 	 * @returns {boolean}
 	 */
 	is_gb_hectad() {
-		return GridCoordsGB.gbHectads.indexOf(this.to_hectad()) !== -1;
+		return GridCoordsGB.gbHectads.indexOf(this.toHectad()) !== -1;
 	};
 
 	/**
@@ -412,7 +469,7 @@ export class GridCoordsGB extends GridCoords {
 	 *
 	 * @returns {LatLngWGS84}
 	 */
-	to_latLng() {
+	toLatLng() {
 		//airy1830 = RefEll::airy1830(); //new RefEll(6377563.396, 6356256.909);
 		//var OSGB_F0  = 0.9996012717;
 		//var N0       = -100000.0;
@@ -506,7 +563,7 @@ export class GridCoordsGB extends GridCoords {
 			+ (XII * Math.pow(E - E0, 5.0))
 			- (XIIA * Math.pow(E - E0, 7.0));
 
-		return (new LatLngGB(rad2deg * phi, rad2deg * lambda)).to_WGS84();
+		return (new LatLngGB(rad2deg * phi, rad2deg * lambda)).toWGS84();
 	}
 }
 
@@ -548,10 +605,10 @@ export class GridCoordsIE extends GridCoords {
 	 *
 	 * @returns {LatLngWGS84}
 	 */
-	to_latLng() {
+	toLatLng() {
 		//converts OSI coords to lat/long.
 
-		// modified from OSGBtoLL, Equations from USGS Bulletin 1532
+		// Modified from OSGBtoLL, equations from USGS Bulletin 1532
 		//East Longitudes are positive, West longitudes are negative.
 		//North latitudes are positive, South latitudes are negative
 		//Lat and Long are in decimal degrees.
@@ -640,7 +697,7 @@ export class GridCoordsIE extends GridCoords {
 
 		//return ll;
 
-		return (new LatLngIE(Lat, Long)).to_WGS84();
+		return (new LatLngIE(Lat, Long)).toWGS84();
 	}
 
 	/**
@@ -648,7 +705,7 @@ export class GridCoordsIE extends GridCoords {
 	 * @param {number} precision metres
 	 * @returns {String}
 	 */
-	to_gridref(precision) {
+	toGridRefString(precision) {
 		const hundredkmE = (this.x / 100000) | 0,
 			hundredkmN = (this.y / 100000) | 0;
 		if (GridCoordsIE.irishGrid[hundredkmE] && GridCoordsIE.irishGrid[hundredkmE][hundredkmN]) {
@@ -667,7 +724,7 @@ export class GridCoordsIE extends GridCoords {
 	 *
 	 * @return {?string} hectad
 	 */
-	to_hectad() {
+	toHectad() {
 		const hundredkmE = (this.x / 100000) | 0,
 			hundredkmN = (this.y / 100000) | 0;
 
@@ -705,7 +762,7 @@ export class GridCoordsCI extends GridCoords {
 	 *
 	 * @returns {LatLngWGS84}
 	 */
-	to_latLng() {
+	toLatLng() {
 		//nX = north;
 		//ex = east;
 
@@ -759,7 +816,7 @@ export class GridCoordsCI extends GridCoords {
 	 * @param {number} precision metres
 	 * @returns {?string}
 	 */
-	to_gridref(precision) {
+	toGridRefString(precision) {
 		if (this.y >= 5500000) {
 			return _e_n_to_gr('WA', this.x - 500000, this.y - 5500000, precision ? precision : 1);
 		} else if (this.y < 5500000) {
@@ -772,7 +829,7 @@ export class GridCoordsCI extends GridCoords {
 	 *
 	 * @returns {?string}
 	 */
-	to_hectad() {
+	toHectad() {
 		if (this.y > 5500000) {
 			return 'WA' + this.x.toString().substring(1, 2) + this.y.toString().substring(2, 3);
 		} else if (this.y < 5500000) {
@@ -796,14 +853,14 @@ export class GridCoordsCI extends GridCoords {
 
 	static _initial_lat (north, n0, af0, phi0, n, bf0) {
 		let phi1 = ((north - n0) / af0) + phi0;
-		let M = LatLng._Marc(bf0, n, phi0, phi1);
+		let M = LatLng._marc(bf0, n, phi0, phi1);
 		let phi2 = ((north - n0 - M) / af0) + phi1;
 		let ind = 0;
 		while ((Math.abs(north - n0 - M) > 0.00001) && (ind < 20))  // max 20 iterations in case of error
 		{
 			ind += 1;
 			phi2 = ((north - n0 - M) / af0) + phi1;
-			M = LatLng._Marc(bf0, n, phi0, phi2);
+			M = LatLng._marc(bf0, n, phi0, phi2);
 			phi1 = phi2;
 		}
 		return phi2;
