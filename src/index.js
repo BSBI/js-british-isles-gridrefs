@@ -4,6 +4,7 @@ export {LatLngWGS84} from './LatLng/LatLngWGS84';
 export {LatLngGB} from './LatLng/LatLngGB';
 export {LatLngIE} from './LatLng/LatLngIE';
 export {LatLngCI} from './LatLng/LatLngCI';
+export {TETRAD_OFFSETS} from './GridRef/GridRef';
 
 
 

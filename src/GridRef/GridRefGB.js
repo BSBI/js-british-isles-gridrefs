@@ -38,7 +38,7 @@ export class GridRefGB extends GridRef {
 	}
 
 	/**
-	 * gridref known to have correct syntax
+	 * grid ref known to have correct syntax
 	 * may have tetrad or quadrant suffix
 	 *
 	 * @param {string} rawGridRef
@@ -65,12 +65,20 @@ export class GridRefGB extends GridRef {
 			// tetrad or quadrant suffix
 
 			if (this.tetradLetter) {
+				if (!TETRAD_OFFSETS.hasOwnProperty(this.tetradLetter)) {
+					throw new Error(`Invalid tetrad letter: ${this.tetradLetter}`);
+				}
+
 				this.preciseGridRef = this.tetrad = this.hectad + this.tetradLetter;
 				this.length = 2000; // 2km square
 				this.gridCoords.x += TETRAD_OFFSETS[this.tetradLetter][0];
 				this.gridCoords.y += TETRAD_OFFSETS[this.tetradLetter][1];
 			} else {
 				// quadrant
+				if (!QUADRANT_OFFSETS.hasOwnProperty(this.quadrantCode)) {
+					throw new Error(`Invalid quadrant code: ${this.quadrantCode}`);
+				}
+
 				this.preciseGridRef = this.quadrant = rawGridRef + this.quadrantCode;
 				this.length = 5000; // 5km square
 				this.gridCoords.x += QUADRANT_OFFSETS[this.quadrantCode][0];
@@ -80,7 +88,7 @@ export class GridRefGB extends GridRef {
 			this.preciseGridRef = rawGridRef;
 
 			if (this.length <= 1000) {
-				// calculate tetrad for precise gridref
+				// calculate tetrad for precise grid ref
 				this.setTetrad();
 			}
 		}
