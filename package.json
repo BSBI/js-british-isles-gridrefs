@@ -23,12 +23,13 @@
     "url": "https://github.com/japonicus/js-british-isles-gridrefs/issues"
   },
   "module": "dist/gridrefutils.mjs",
+  "type": "module",
   "sideEffects": false,
   "scripts": {
     "build": "rollup -c --strictDeprecations"
   },
   "devDependencies": {
-    "rollup": "^4.59.0",
+    "rollup": "^4.60.3",
     "@rollup/plugin-terser": "^1.0.0"
   },
   "dependencies": {
