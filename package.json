@@ -21,13 +21,17 @@
     "url": "https://github.com/BSBI/js-british-isles-gridrefs.git"
   },
   "bugs": {
-    "url": "https://github.com/japonicus/js-british-isles-gridrefs/issues"
+    "url": "https://github.com/BSBI/js-british-isles-gridrefs/issues"
   },
   "module": "dist/gridrefutils.mjs",
+  "_comment_files": "Without an explicit allowlist npm falls back to .gitignore when packing, which ignores dist/gridrefutils.mjs - so prepare would build the entry point and then pack would silently discard it.",
+  "files": ["dist", "src"],
   "type": "module",
   "sideEffects": false,
   "scripts": {
-    "build": "rollup -c --strictDeprecations"
+    "build": "rollup -c --strictDeprecations",
+    "_comment_prepare": "dist/gridrefutils.mjs is gitignored, so a git-URL install fetches source with no build output and the package's own entry point is absent. npm runs prepare for git dependencies, which is what makes this package usable when consumed from GitHub rather than a local path.",
+    "prepare": "npm run build"
   },
   "devDependencies": {
     "rollup": "^4.62.2",
